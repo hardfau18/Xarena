@@ -1,2 +1,0 @@
--Create media/ and media/images and media/images/profile_pics directories
--add media/images/profile_pics/default.jpg its for default userimage
