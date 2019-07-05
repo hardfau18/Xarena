@@ -6,7 +6,14 @@ from PIL import Image
 User._meta.get_field('email')._unique = True
 
 
-from django.contrib.auth.models import User
+class Game(models.Model):
+    users = models.ManyToManyField(User, through="Membership")
+    name = models.CharField(max_length=20)
+    image = models.ImageField(upload_to="images/game_profile", default="images/game_profile/default.png")
+    desc = models.TextField()
+
+    def __str__(self):
+        return self.name
 
 
 class Profile(models.Model):
@@ -25,3 +32,14 @@ class Profile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.image.path)
+
+
+
+class Membership(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    player = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_name = models.CharField(max_length=50)
+    user_id = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.user_name
