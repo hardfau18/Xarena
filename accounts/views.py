@@ -3,7 +3,7 @@ from django.contrib import messages
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -11,6 +11,11 @@ from django.template.loader import render_to_string
 from .tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.views.generic import UpdateView, DeleteView
+from django.shortcuts import get_object_or_404
+from .models import Membership
+from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 
 
 def target(request):
@@ -42,9 +47,6 @@ def register(request):
             )
             email.send()
             return render(request, "accounts/verify_email.html", )
-         #   username = form.cleaned_data.get("username")
-         #   messages.success(request, f"Account created for {username}. Login using that Credentials.")
-          #  return redirect("login")
     else:
         form = UserRegisterForm()
     context = {
@@ -64,7 +66,7 @@ def activate(request, uidb64, token):
         user.profile.email_confirmed = True
         user.save()
         login(request, user)
-        messages.success(request, f"{user.username} Your account has been activated. Login with Your credentials")
+        messages.success(request, f"{user.username} Your account has been activated.")
         return redirect("profile")
     else:
         return HttpResponse('Activation link is invalid!')
@@ -86,6 +88,42 @@ def profile(request):
         p_form = ProfileUpdateForm(instance=request.user.profile)
     context = {
         "u_form":u_form,
-        "p_form":p_form
+        "p_form":p_form,
+        "game":request.user.membership_set.all()[0] if len(request.user.membership_set.all())>0 else None,
+        "games":request.user.membership_set.all()[1:] if len(request.user.membership_set.all())>0 else None
     }
     return render(request, "accounts/profile.html", context)
+
+
+class UpdateSubscription(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    template_name = "tourney/update_subscription.html"
+    model = Membership
+    fields = ["user_name", "user_id"]
+
+    def get_object(self):
+        id = self.kwargs.get("pk")
+        return get_object_or_404(Membership, pk=id)
+
+    def test_func(self):
+        membership = self.get_object()
+        if self.request.user == membership.player:
+            return True
+        return False
+
+
+class DeleteSubscription(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    template_name = "tourney/delete_subscription.html"
+    model = Membership
+
+    def get_object(self):
+        id = self.kwargs.get("pk")
+        return get_object_or_404(Membership, pk=id)
+
+    def get_success_url(self):
+        return reverse("profile")
+
+    def test_func(self):
+        membership = self.get_object()
+        if self.request.user == membership.player:
+            return True
+        return False

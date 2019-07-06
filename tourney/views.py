@@ -1,7 +1,7 @@
-from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView
 from accounts.models import Game, Membership
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 
 
 class Store(ListView):
@@ -22,4 +22,12 @@ class Subscribe(LoginRequiredMixin,CreateView):
         form.instance.player = self.request.user
         form.instance.game = Game.objects.get(pk=self.kwargs['pk'])
         return super().form_valid(form)
+
+
+    def get_success_url(self):
+        return reverse("store")
+
+
+
+
 

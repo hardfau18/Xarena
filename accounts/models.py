@@ -50,4 +50,4 @@ class Membership(models.Model):
 
 
     def get_absolute_url(self):
-        return reverse('index')
+        return reverse('profile')

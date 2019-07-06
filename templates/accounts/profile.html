@@ -15,18 +15,71 @@
         </div>
     </div>
     <br/>
+
+
+
+    <!-- gamelist via javascript -->
+{% if game %}
+
+    <div class="row">
+        <div class="col-4">
+            <div class="list-group" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active " id="list-{{game.user_id}}-list" data-toggle="list" href="#list-{{game.user_id}}" role="tab" aria-controls="{{game.user_id}}">{{game.game}}</a>
+                {% for membership in games %}
+                <a class="list-group-item list-group-item-action " id="list-{{membership.user_id}}-list" data-toggle="list" href="#list-{{membership.user_id}}" role="tab" aria-controls="{{membership.user_id}}">{{membership.game}}</a>
+                {% endfor %}
+
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="list-{{game.user_id}}" role="tabpanel" aria-labelledby="list-{{game.user_id}}-list">
+                    User Name is :- {{game.user_name}}
+                    <br/>
+                    User Id is :- {{game.user_id}}
+                    <br/>
+                    <a class="btn btn-outline-info" href="{% url 'update_subscription' game.pk %}">Edit</a>
+                    <a class="btn btn-outline-danger" href="{% url 'delete_subscription' game.pk %}">Unsubscribe</a>
+                </div>
+                {% for membership in games %}
+                <div class="tab-pane fade " id="list-{{membership.user_id}}" role="tabpanel" aria-labelledby="list-{{membership.user_id}}-list">
+                    User Name is :- {{membership.user_name}}
+                    <br/>
+                    User Id is :- {{membership.user_id}}
+                    <br/>
+                    <a class="btn btn-outline-info" href="{% url 'update_subscription' membership.pk %}">Edit</a>
+                    <a class="btn btn-outline-danger" href="{% url 'delete_subscription' membership.pk %}">Unsubscribe</a>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <p>You have not subscribed any Games. To play tournaments subscribe first</p>
+    <a class="btn btn-outline-info" href="{% url 'store' %}">Games</a>
+
+
+
+{% endif %}
+  <!--  end gamelist -->
+
+
+
+
     <br/>
     <br/>
     <form method="post" enctype="multipart/form-data">
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Update Profile info</legend>
         </fieldset>
-         {% csrf_token %}
+        {% csrf_token %}
         {{u_form|crispy}}
         {{p_form|crispy}}
-            <div class="form-group">
-                <button type="submit" class="btn btn-outline-info">Update</button>
-            </div>
-        </form>
+        <div class="form-group">
+            <button type="submit" class="btn btn-outline-info">Update</button>
+        </div>
+    </form>
 </div>
 {% endblock  %}
