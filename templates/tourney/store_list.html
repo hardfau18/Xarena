@@ -20,9 +20,9 @@
 
                     <!-- modal form -->
 
-                    <button type="button" class="btn  btn-outline-info">
-                        <a href="{% url 'subscribe' instance.pk  %}" >Subscribe</a>
-                    </button>
+
+                        <a class="btn  btn-outline-info" href="{% url 'subscribe' instance.pk  %}" >Subscribe</a>
+
 
                     <!-- Modal
                      data-toggle="modal" data-target="#Subscribe"
@@ -51,9 +51,9 @@
                     </div>
                     modal end -->
 
-                    <button class="btn btn-outline-info">
-                        <a href="{% url 'detail' instance.pk %}"> Details </a>
-                    </button>
+
+                        <a class="btn  btn-outline-info" href="{% url 'detail' instance.pk %}"> Details </a>
+
                 </div>
                 <p>
                     {{instance.desc}}
