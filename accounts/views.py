@@ -27,9 +27,6 @@ def register(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            print("\n\n")
-            print(user.username)
-            print("\n\n")
             current_site = get_current_site(request)
             mail_subject = "Activate your account."
             message = render_to_string('accounts/acc_activate_email.html',

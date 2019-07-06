@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block head %}
+
+<legend class="border-bottom mb-4"> Store </legend>
+
+{% endblock %}
+
+{% block content %}
+{% for instance in object_list %}
+<div class="row">
+    <div class="col-md-6 col-sm-6" width="350">
+        <div>
+            <legend class="border-bottom mb-6"> {{instance.name}} </legend>
+            <a href="{% url 'detail' instance.id %}">
+                <img src="{{instance.image.url}}" width="375">
+            </a>
+            <div class="info">
+                <div class="form-group">
+
+                    <!-- modal form -->
+
+                    <button type="button" class="btn  btn-outline-info">
+                        <a href="{% url 'subscribe' instance.pk  %}" >Subscribe</a>
+                    </button>
+
+                    <!-- Modal
+                     data-toggle="modal" data-target="#Subscribe"
+                    <div class="modal fade" id="Subscribe" tabindex="-1" role="dialog" aria-labelledby="SubscribeLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="SubscribeLabel">Modal title</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form method="post" >
+                                    <div class="modal-body">
+                                        <p>something</p>
+                                        {% csrf_token %}
+                                        {{form|crispy}}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    modal end -->
+
+                    <button class="btn btn-outline-info">
+                        <a href="{% url 'detail' instance.pk %}"> Details </a>
+                    </button>
+                </div>
+                <p>
+                    {{instance.desc}}
+                </p>
+                <br/>
+                <br/>
+                <br/>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

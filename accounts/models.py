@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
+from django.urls import reverse
 
 
 User._meta.get_field('email')._unique = True
@@ -14,6 +15,9 @@ class Game(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
 
 
 class Profile(models.Model):
@@ -38,8 +42,12 @@ class Profile(models.Model):
 class Membership(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     player = models.ForeignKey(User, on_delete=models.CASCADE)
-    user_name = models.CharField(max_length=50)
-    user_id = models.CharField(max_length=100)
+    user_name = models.CharField(max_length=50, unique=True)
+    user_id = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.user_name
+
+
+    def get_absolute_url(self):
+        return reverse('index')
