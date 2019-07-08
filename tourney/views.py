@@ -112,5 +112,6 @@ def handle_request(request):
         if request.user in tourney.players.all():
             tourney.players.remove(s.player)
         print('transaction ' + response['RESPMSG'])
+    response["tourney_pk"] = tourney.pk
     return render(request, "tourney/payment_status.html", response)
 

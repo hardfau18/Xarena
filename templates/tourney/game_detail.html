@@ -1,54 +1,18 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+
 {% block head %}
-
 <legend class="border-bottom mb-4"> {{object.title}} </legend>
-
 {% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-6 col-sm-6" width="350">
         <div>
-
             <img src="{{object.image.url}}" width="375">
-
             <div class="info">
                 <div class="form-group">
-
-                    <!-- modal form -->
-
-
-                        <a class="btn  btn-outline-info" href="{% url 'subscribe' object.pk  %}">Subscribe</a>
-
-
-                    <!-- Modal
-                    <div class="modal fade" id="Subscribe" tabindex="-1" role="dialog" aria-labelledby="SubscribeLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="SubscribeLabel">User Info</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form method="post" >
-                                    <div class="modal-body">
-                                        <p>something</p>
-                                        {% csrf_token %}
-                                        {{form|crispy}}
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                     modal end -->
-
-
+                    <a class="btn  btn-outline-info" href="{% url 'subscribe' object.pk  %}">Subscribe</a>
                 </div>
                 <p>
                     {{object.desc}}
