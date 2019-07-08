@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block head %}
+
+<legend class="border-bottom mb-4"> Tournaments </legend>
+
+{% endblock %}
+
+{% block content %}
+{% for instance in object_list %}
+<div class="row">
+    <div class="col-md-6 col-sm-6" width="350">
+        <div>
+            <legend class="border-bottom mb-6"> {{instance.game.name}} </legend>
+                <img src="{{instance.game.image.url}}" width="375">
+            <div class="info">
+                <div class="form-group">
+
+                    <p>Tournament type :- {{ instance.tourney_type }}
+                    <br/>
+                    Entry Fee :- {{ instance.price }} in INR
+                    </p>
+
+                    <a class="btn btn-outline-info" href="{% url 'tournament_detail' instance.pk %}">Detail</a>
+
+                </div>
+                <p>
+                </p>
+                <br/>
+                <br/>
+                <br/>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

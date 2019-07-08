@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block head %}
+
+<legend class="border-bottom mb-4"> {{object.game.name}} </legend>
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-sm-6" width="350">
+        <div>
+
+            <img src="{{object.game.image.url}}" width="375">
+
+            <div class="info">
+                <div class="form-group">
+
+                    {% if user_exist != user.username%}
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <button type="submit" class="btn  btn-outline-info" >Join</button>
+                    </form>
+                    {% endif %}
+
+
+
+                </div>
+                <p>
+                    Game           : {{object.tourney_type}}
+                    <br/>
+                    Time           : {{object.time}}
+                    <br/>
+                    Players Joined :
+                </p>
+                <br/>
+                <br/>
+                <br/>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

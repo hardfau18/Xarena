@@ -1,6 +1,7 @@
 assets/*
 media/*
 Xarena/settings.py
+**/migrations/
 .idea/*
 # Byte-compiled / optimized / DLL files
 __pycache__/

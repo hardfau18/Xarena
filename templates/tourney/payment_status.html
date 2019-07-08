@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-reboot.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <script src=" {% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src=" {% static 'js/bootstrap.min.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <title>Payment Info</title>
+
+
+</head>
+<body>
+
+<div class="container">
+    <div class="alert alert-{{message.tags}}"> {{message}} </div>
+    <legend class="border-bottom mb-4"> Payment Info </legend>
+    <div class="content-section">
+        <h2>Payment status regarding your subscription id {{ORDERID}}</h2>
+        {% if RESPCODE == '01' %}
+        PAYMENT SUCCESS
+        {% else %}
+        PAYMENT FAILED
+        <br/>
+        Due to {{RESPMSG}}
+        {{code}}
+        {% endif %}
+
+    </div>
+</div>
+
+
+</body>
+</html>
+
+
+git filter-branch --force --index-filter 'git rm -r --cached --ignore-unmatch tourney/migrations/' --prune-empty --tag-name-filter cat -- --all
