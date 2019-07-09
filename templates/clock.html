@@ -1,0 +1,14 @@
+{% load static %}
+<!-- To include this need to add "<input type="hidden" id="datetime" name="variable" value="Set date time here">"
+    That type of field in your html file
+    -->
+<div id="countdown">
+    <div id='tiles'></div>
+    <div class="labels">
+        <li>Days</li>
+        <li>Hours</li>
+        <li>Mins</li>
+        <li>Secs</li>
+    </div>
+</div>
+<script src="{% static 'js/datetime.js' %}"></script>
