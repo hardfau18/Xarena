@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from accounts.models import Game, Membership
+from django.utils import timezone
 
 
 class Tournament(models.Model):
@@ -12,6 +13,9 @@ class Tournament(models.Model):
     time = models.DateTimeField()
     tourney_id = models.CharField(max_length=50)
     tourney_pass = models.CharField(max_length=15)
+
+    def is_live(self):
+        return True if self.time <= timezone.now() else False
 
     def __str__(self):
         return self.game.name
@@ -29,3 +33,5 @@ class Subscription(models.Model):
 
     def __str__(self):
         return self.player.username + "_" + self.tourney.game.name
+
+

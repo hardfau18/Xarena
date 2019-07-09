@@ -1,8 +1,10 @@
 body{
-	font: normal 13px/20px Arial, Helvetica, sans-serif; word-wrap:break-word;
+	font: normal 16px/20px Arial, Helvetica, sans-serif; word-wrap:break-word;
 	color: #eee;
 	background: #3b3b3b;
 }
+
+
 #countdown{
 	width: 465px;
 	height: 165px;

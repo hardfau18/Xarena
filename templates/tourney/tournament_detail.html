@@ -2,7 +2,7 @@
 {% load static %}
 {% block head %}
 
-<legend class="border-bottom mb-4"> {{object.game.name}} </legend>
+<legend class="border-bottom mb-4"> {{object.game.name}}:~ </legend>
 
 {% endblock %}
 
@@ -24,8 +24,10 @@
                     Price          : {{object.price}} in INR
                 </p>
                 <input type="hidden" id="datetime" name="variable" value="{{ object.time.isoformat }}">
+                {% if not object.is_live %}
+
                 {% include 'clock.html' %}
-                <br/>
+
                 {% if user_exist != user.username %}
                 <div class="form-group">
                     <form method="post" action="">
@@ -45,6 +47,13 @@
                 Tournament Password : {{object.tourney_pass}}
                 </p>
                 {% endif %}
+
+                {% else %}
+                 <a class="btn btn-outline-info" href="#">Live</a>
+                {% endif %}
+                <br/>
+
+
                 <br/>
                 <br/>
                 <br/>
