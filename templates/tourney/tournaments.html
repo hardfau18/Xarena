@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block head %}
 
-<legend class="border-bottom mb-4"> Tournaments </legend>
+<legend class=" mb-4"> Tournaments:- </legend>
 
 {% endblock %}
 
@@ -11,7 +11,7 @@
     <div class="col-md-6 col-sm-6" width="350">
         <div>
             <legend class="border-bottom mb-6"> {{instance.game.name}} </legend>
-                <img src="{{instance.game.image.url}}" width="375">
+                <img class="mb-3" src="{{instance.game.image.url}}" width="375">
             <div class="info">
                 <div class="form-group">
 

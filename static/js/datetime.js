@@ -10,7 +10,9 @@ setInterval(function () { getCountdown(); }, 1000);
 
 function getCountdown(){
 	// find the amount of "seconds" between now and target
+
 	var current_date = new Date().getTime();
+
 	var seconds_left = (target_date - current_date) / 1000;
 
 	days = pad( parseInt(seconds_left / 86400) );
@@ -21,7 +23,12 @@ function getCountdown(){
 
 	minutes = pad( parseInt(seconds_left / 60) );
 	seconds = pad( parseInt( seconds_left % 60 ) );
-
+    if  (current_date >= target_date) {
+    days=pad(0);
+    hours=pad(0);
+    minutes=pad(0);
+    seconds=pad(0)
+    }
 	// format countdown string + set tag value
 	countdown.innerHTML = "<span>" + days + "</span><span>" + hours + "</span><span>" + minutes + "</span><span>" + seconds + "</span>";
 }
