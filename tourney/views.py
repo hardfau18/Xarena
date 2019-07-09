@@ -3,20 +3,21 @@ from accounts.models import Game, Membership
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from .models import Tournament, Subscription
-from django.http import  HttpResponseBadRequest
+from django.http import HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from paytm import checksum
-from django.core.exceptions import SuspiciousOperation
-
+from django.contrib import messages
 
 merchant_key = '5N1ZW7zBgXCoOiRZ'
+
 
 class Store(ListView):
     template_name = 'tourney/store_list.html'
     model = Game
+
 
 class Detail(DetailView):
     template_name = 'tourney/game_detail.html'
@@ -33,7 +34,6 @@ class Subscribe(LoginRequiredMixin,CreateView):
         form.instance.game = Game.objects.get(pk=self.kwargs['pk'])
         return super().form_valid(form)
 
-
     def get_success_url(self):
         return reverse("store")
 
@@ -46,13 +46,16 @@ class Tourney(LoginRequiredMixin, ListView):
 @login_required
 def tourney_detail(request, pk):
     tourney = get_object_or_404(Tournament, pk=pk)
-
+    if request.user not in tourney.game.users.all():
+        messages.warning(request,"To participate in tournament you need to subscribe to the game first")
+        return redirect("detail", pk=tourney.game.pk)
 
     if request.method == "POST":
-        if not request.user in tourney.players.all():
+        if request.user not in tourney.players.all():
             tourney.players.add(request.user)
         subscription = get_object_or_404(Subscription, tourney=tourney, player=request.user)
-
+        subscription.membership = request.user.membership_set.get(game=tourney.game)
+        subscription.save()
         if subscription.player_joined:
             return redirect("tournaments")
 
@@ -74,7 +77,6 @@ def tourney_detail(request, pk):
 
     if request.user in tourney.players.all() and Subscription.objects.get(tourney=tourney, player=request.user).player_joined :
         user_exist = tourney.players.get(id=request.user.id).username
-        print(user_exist)
     else:
         user_exist = ""
         if request.user in tourney.players.all():
@@ -103,7 +105,6 @@ def handle_request(request):
     tourney = s.tourney
 
     if not code:
-        code = "hash_doesn't match"
         return HttpResponseBadRequest(content="Transaction failed due to Hash missmatch")
     elif form['RESPCODE'] == '01':
         s.player_joined = True

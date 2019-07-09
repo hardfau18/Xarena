@@ -17,14 +17,10 @@ class Game(models.Model):
         return self.name
 
 
-
-
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="images/profile_pics", default="images/profile_pics/default.png")
     email_confirmed = models.BooleanField(default=False)
-
 
     def __str__(self):
         return f"{self.user.username} profile"
@@ -38,7 +34,6 @@ class Profile(models.Model):
             img.save(self.image.path)
 
 
-
 class Membership(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     player = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -47,7 +42,6 @@ class Membership(models.Model):
 
     def __str__(self):
         return self.user_name
-
 
     def get_absolute_url(self):
         return reverse('profile')

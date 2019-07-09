@@ -10,6 +10,8 @@ class Tournament(models.Model):
     tourney_type = models.CharField(max_length=20)
     price = models.IntegerField()
     time = models.DateTimeField()
+    tourney_id = models.CharField(max_length=50)
+    tourney_pass = models.CharField(max_length=15)
 
     def __str__(self):
         return self.game.name
@@ -21,6 +23,7 @@ class Tournament(models.Model):
 class Subscription(models.Model):
     tourney = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     player = models.ForeignKey(User, on_delete=models.CASCADE)
+    membership = models.ForeignKey(Membership, on_delete=models.CASCADE, null=True)
     subscription_id = models.AutoField(primary_key=True,)
     player_joined = models.BooleanField(default=False)
 
