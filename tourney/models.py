@@ -11,6 +11,7 @@ class Tournament(models.Model):
     price = models.IntegerField()
     time = models.DateTimeField()
 
+
     def __str__(self):
         return self.game.name
 
@@ -21,6 +22,7 @@ class Tournament(models.Model):
 class Subscription(models.Model):
     tourney = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     player = models.ForeignKey(User, on_delete=models.CASCADE)
+    membership = models.ForeignKey(Membership, on_delete=models.CASCADE, null=True)
     subscription_id = models.AutoField(primary_key=True,)
     player_joined = models.BooleanField(default=False)
 

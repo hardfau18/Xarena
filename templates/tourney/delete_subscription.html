@@ -8,6 +8,7 @@
     <form method="post">
         {% csrf_token %}
         <h3> Do you really want to unsubscribe {{object.game}} </h3>
+        <p>You will be removed from Currently joined tournaments of this game.</p>
         <div class="form-group">
             <button type="submit" class="btn btn-outline-danger">Unsubscribe</button>
             <a class="btn btn-outline-secondary" href="{% url 'profile' %}">Cancel</a>
