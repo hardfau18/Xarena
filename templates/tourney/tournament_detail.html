@@ -12,23 +12,36 @@
         <div>
             <img src="{{object.game.image.url}}" width="375">
             <div class="info">
-                <div class="form-group">
-                    {% if user_exist != user.username%}
-                    <form method="post" action="">
-                        {% csrf_token %}
-                        <button type="submit" class="btn  btn-outline-info" >Join</button>
-                    </form>
-                    {% endif %}
-                </div>
                 <p>
                     Game           : {{object.tourney_type}}
                     <br/>
                     Time           : {{object.time}}
                     <br/>
-                    Max Number of players : {{object.maxplayers -10}}
+                    Max players    : {{object.max_players|add:"-10"}}
                     <br/>
                     Players Joined : {{object.players_joined}}
+                    <br/>
+                    Price          : {{object.price}} in INR
                 </p>
+                {% if user_exist != user.username %}
+                <div class="form-group">
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <button type="submit" class="btn  btn-outline-info" >Join</button>
+                    </form>
+                </div>
+                {% else %}
+                <legend class="border-bottom mb-3">Info</legend>
+                <p>
+                <div class="alert alert-warning">
+                    This Info is only be accessible by Joined members.
+                    If anyone found to be sharing id or pass may result in temporary or may permanent ban
+                </div>
+                Tournament Id       : {{object.tourney_id}}
+                <br/>
+                Tournament Password : {{object.tourney_pass}}
+                </p>
+                {% endif %}
                 <br/>
                 <br/>
                 <br/>
