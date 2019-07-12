@@ -63,7 +63,7 @@ def tourney_detail(request, pk):
             "CHANNEL_ID": "WEB",
             "INDUSTRY_TYPE_ID": "Retail",
             "WEBSITE": "WEBSTAGING",
-            'CALLBACK_URL': 'http://localhost:8000/tournaments/handle-request'
+            'CALLBACK_URL': 'http://13.127.178.253/tournaments/handle-request'
         }
 
         params["CHECKSUMHASH"] = checksum.generate_checksum(params, merchant_key)
