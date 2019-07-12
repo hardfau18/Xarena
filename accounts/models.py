@@ -21,6 +21,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="images/profile_pics", default="images/profile_pics/default.png")
     email_confirmed = models.BooleanField(default=False)
+    account_balance = models.IntegerField()
 
     def __str__(self):
         return f"{self.user.username} profile"
@@ -37,11 +38,27 @@ class Profile(models.Model):
 class Membership(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     player = models.ForeignKey(User, on_delete=models.CASCADE)
-    user_name = models.CharField(max_length=50, unique=True)
-    user_id = models.CharField(max_length=100, unique=True)
+    user_name = models.CharField(max_length=50 )
+    user_id = models.CharField(max_length=100)
+
+    class Meta:
+        unique_together = ('user_name', 'user_id')
 
     def __str__(self):
         return self.user_name
 
     def get_absolute_url(self):
         return reverse('profile')
+
+
+class Order(models.Model):
+    order_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.PositiveIntegerField()
+    date_of_payment = models.DateTimeField(auto_now_add=True)
+    TRANSACTION_TYPE = (
+        ("deposit","To account"),
+        ("withdraw", "To wallet")
+    )
+    transaction_type = models.CharField(max_length=8, choices=TRANSACTION_TYPE)
+    transaction_success = models.BooleanField(default=False)

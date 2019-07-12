@@ -13,6 +13,10 @@ class Tournament(models.Model):
     time = models.DateTimeField()
     tourney_id = models.CharField(max_length=50)
     tourney_pass = models.CharField(max_length=15)
+    first_prize = models.IntegerField()
+    second_prize = models.IntegerField()
+    third_prize = models.IntegerField()
+    prize_per_kill = models.IntegerField(null=True, blank=True)
 
     def is_live(self):
         return True if self.time <= timezone.now() else False

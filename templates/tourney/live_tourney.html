@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+
+<legend class="border-bottom mb-4"> {{object.game.name}} live:- </legend>
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-sm-6" width="350">
+        <div>
+            <img src="{{object.game.image.url}}" width="375">
+            <div class="info">
+                <p>
+                    Game           : {{object.tourney_type}}
+
+                <br/>
+                    Players Joined : {{object.players_joined}}

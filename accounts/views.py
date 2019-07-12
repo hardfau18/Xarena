@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, AmountTransfer
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
 from django.contrib.auth import login
@@ -10,12 +10,15 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from .tokens import account_activation_token
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse,  HttpResponseBadRequest
 from django.views.generic import UpdateView, DeleteView
 from django.shortcuts import get_object_or_404
-from .models import Membership
+from .models import Membership, Order
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
+from django.views.decorators.csrf import csrf_exempt
+from paytm import checksum
+merchant_key = '5N1ZW7zBgXCoOiRZ'
 
 
 def target(request):
@@ -127,3 +130,67 @@ class DeleteSubscription(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == membership.player:
             return True
         return False
+
+
+def money_transfer(request):
+    if request.method == "POST":
+        form = AmountTransfer(request.POST)
+        balance = request.user.profile.account_balance
+        print(balance)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user = request.user
+
+            if request.POST.get("toggle_option") == "deposit":
+                order.transaction_type = "deposit"
+                order.save()
+                request.user.profile.account_balance -= int(form.data['amount'])
+                request.user.profile.save()
+            elif request.POST.get("toggle_option") == "withdraw":
+                order.transaction_type = "withdraw"
+                order.save()
+                params = {
+                    "MID": "eJvkxV73534228896310",
+                    "ORDER_ID": str(order.order_id),
+                    "CUST_ID": request.user.email,
+                    "TXN_AMOUNT": str(order.amount),
+                    "CHANNEL_ID": "WEB",
+                    "INDUSTRY_TYPE_ID": "Retail",
+                    "WEBSITE": "WEBSTAGING",
+                    'CALLBACK_URL': 'http://localhost:8000/accounts/profile/trans-status'
+                }
+                params["CHECKSUMHASH"] = checksum.generate_checksum(params, merchant_key)
+                return render(request, "accounts/paytm.html", {"params": params})
+            else:
+                return HttpResponseBadRequest(content="Invalid Request")
+    form = AmountTransfer(initial={"user":request.user})
+    context = {
+    'form':form
+    }
+    return render(request, "accounts/transfer.html", context)
+
+
+@csrf_exempt
+def trans_status(request):
+    if request.method != "POST":
+        return HttpResponseBadRequest(content="<h1>Bad request 400</h1> <br/>invalid request")
+    form = request.POST
+    response = {}
+
+    for i in form.keys():
+        response[i] = form[i]
+    code = checksum.verify_checksum(response, merchant_key, form['CHECKSUMHASH'])
+
+    order = Order.objects.get(pk=form["ORDERID"])
+
+    if not code:
+        return HttpResponseBadRequest(content="Transaction failed due to Hash missmatch")
+    elif form['RESPCODE'] == '01':
+        order.transaction_success = True
+        order.user.profile.account_balance += order.amount
+        order.user.profile.save()
+        order.save()
+
+    else:
+        return HttpResponse("unkown error contact us")
+    return render(request, "accounts/payment_status.html", response)

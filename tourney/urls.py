@@ -8,5 +8,4 @@ urlpatterns = [
     path("game/<int:pk>/subscribe", views.Subscribe.as_view(), name="subscribe"),
     path("", views.Tourney.as_view(), name = "tournaments"),
     path("<int:pk>/", views.tourney_detail, name="tournament_detail"),
-    path("handle-request", views.handle_request, name="handle_request")
 ]
