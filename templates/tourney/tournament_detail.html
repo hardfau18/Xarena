@@ -2,7 +2,7 @@
 {% load static %}
 {% block head %}
 
-<legend class="border-bottom mb-4"> {{object.game.name}}:~ </legend>
+<legend class="border-bottom mb-4"> {{object.game.name}}:- </legend>
 
 {% endblock %}
 
@@ -22,6 +22,8 @@
                     Players Joined : {{object.players_joined}}
                     <br/>
                     Price          : {{object.price}} in INR
+                    <legend class="border-bottom mb-3">Rewards</legend>
+
                 </p>
                 <input type="hidden" id="datetime" name="variable" value="{{ object.time.isoformat }}">
                 {% if not object.is_live %}

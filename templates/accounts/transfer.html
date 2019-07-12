@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block head %}
+<legend class="border-bottom mb-4"> Transfer Money </legend>
+{% endblock %}
+
+{% block content %}
+<p>
+    Your current wallet balance:-
+    {{user.profile.account_balance}}.00/- in INR
+</p>
+
+<form method="post" action="">
+    {% csrf_token %}
+
+    <div class="toggle_radio">
+        <input type="radio" class="toggle_option" id="first_toggle" name="toggle_option" value="withdraw">
+        <input type="radio" checked class="toggle_option" id="second_toggle" name="toggle_option" value="deposit">
+        <label for="first_toggle"><p>To wallet</p></label>
+        <label for="second_toggle"><p>To account</p></label>
+        <div class="toggle_option_slider">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        {{form|crispy}}
+    </div>
+    <button type="submit" class="btn btn-primary mb-2">Transfer</button>
+</form>
+{% endblock %}
