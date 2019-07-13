@@ -23,6 +23,15 @@
                     <br/>
                     Price          : {{object.price}} in INR
                     <legend class="border-bottom mb-3">Rewards</legend>
+                    First prize    : {{object.first_prize}}
+                    <br/>
+                    Third prize    : {{object.second_prize}}
+                    <br/>
+                    Third prize    : {{object.third_prize}}
+                    <br/>
+                    {% for x,y in special.items %}
+                    {{x}}:{{y}}
+                    {%endfor%}
 
                 </p>
                 <input type="hidden" id="datetime" name="variable" value="{{ object.time.isoformat }}">

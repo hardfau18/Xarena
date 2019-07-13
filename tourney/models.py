@@ -16,7 +16,8 @@ class Tournament(models.Model):
     first_prize = models.IntegerField()
     second_prize = models.IntegerField()
     third_prize = models.IntegerField()
-    prize_per_kill = models.IntegerField(null=True, blank=True)
+    tourney_end = models.BooleanField(default=False)
+    special = models.TextField( null=True, blank=True)
 
     def is_live(self):
         return True if self.time <= timezone.now() else False
@@ -33,7 +34,6 @@ class Subscription(models.Model):
     player = models.ForeignKey(User, on_delete=models.CASCADE)
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE, null=True)
     subscription_id = models.AutoField(primary_key=True,)
-    player_joined = models.BooleanField(default=False)
 
     def __str__(self):
         return self.player.username + "_" + self.tourney.game.name
