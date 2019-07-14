@@ -17,6 +17,8 @@
 
                     <br/>
                     Players Joined : {{object.players_joined}}
+                    <br/>
+                    players Alive  : {{live_players| length }}
                 </p>
                 <p>
                     <legend class="border-bottom mb-3">Rewards</legend>
@@ -35,24 +37,33 @@
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">User Name</th>
+                        <th scope="col">User Id</th>
+                        <th scope="col">kills</th>
+                        <th scope="col">killed by</th>
+
                     </tr>
                     </thead>
                     <tbody>
+
+                    {% for sub in subs %}
+                    {% if sub.is_alive %}
                     <tr class="bg-success">
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
+                        {% else %}
+                        <tr class="bg-danger">
+                        {%endif%}
+                        <th scope="row">{{sub.knock_out_number}}</th>
+                        <td>{{sub.membership.user_name}}</td>
+                        <td>{{sub.membership.user_id}}</td>
+                        <td>{{sub.subscription_set.all|length}}</sub></td>
+                        {% if sub.is_alive %}
+                        <td>-</td>
+                        {%else%}
+                        <td>{{sub.killed_by.membership.user_name}}</td>
+                        {%endif%}
                     </tr>
-                    <tr class="bg-danger">
-                        <th scope="row" >2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
+                    {% endfor %}
+
                     </tbody>
                 </table>
             </div>

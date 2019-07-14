@@ -79,7 +79,10 @@ def tourney_detail(request, pk):
 def live_tourney(request, pk):
     tourney = get_object_or_404(Tournament, pk=pk)
     special = json.loads(tourney.special)
+
     context = {
+        "live_players":[x for x in tourney.subscription_set.all() if x.is_alive],
+        "subs": tourney.subscription_set.all(),
         "special":special,
         "object" : tourney
     }
@@ -88,18 +91,32 @@ def live_tourney(request, pk):
 
 @staff_member_required
 def tourney_manage(request, pk):
+    tourney = get_object_or_404(Tournament, pk=pk)
+    if tourney.tourney_end:
+        messages.warning(request, "Tournament has ended")
+        return redirect("store")
+    players = len(tourney.players.all())
     if request.method=="POST":
-        print(request.POST)
         killer = get_object_or_404(Membership, user_name=request.POST.get("killer"))
         kill = get_object_or_404(Membership, user_name=request.POST.get("kill"))
         subs = get_object_or_404(Subscription, membership=kill)
-        subs.player_alive = False
+        subs.is_alive = False
         subs.killed_by = get_object_or_404(Subscription, membership=killer)
+        subs.knock_out_number = players - tourney.knocked
         subs.save()
+        tourney.knocked += 1
+        tourney.save()
+        if tourney.knocked == players -1 :
+            print("success")
+            s=Subscription.objects.get(is_alive=True)
+            s.knock_out_number = 1
+            s.save()
+            tourney.tourney_end = True
+            tourney.save()
         return redirect("tourney_manage", pk=pk)
-    tourney = get_object_or_404(Tournament, pk=pk)
+
     context = {
-        "subs":tourney.subscription_set.all(),
+        "subs": tourney.subscription_set.all(),
         "object":tourney
     }
     return render(request, "tourney/tourney_manage.html", context)

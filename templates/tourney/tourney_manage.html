@@ -19,26 +19,32 @@
                     Players Joined : {{object.players_joined}}
                 </p>
                 <form method="post">{% csrf_token %}
-                {% for sub in subs %}
-                {% if sub.player_alive %}
-                <div class="searchable">
-                    <input type="text" placeholder="player" name="killer"  onkeyup="filterFunction(this,event)">
-                    <ul >
-                        <li>{{sub.membership.user_name}}</li>
-                    </ul>
-                </div>
-                killed
-                <div class="searchable">
-                    <input type="text" placeholder="killed " name="kill"  onkeyup="filterFunction(this,event)">
-                    <ul >
-                        <li>{{sub.membership.user_name}}</li>
 
-                    </ul>
-                </div>
-                {% endif %}
-                {% endfor %}
+                    <div class="searchable">
+                        <input type="text" placeholder="player" name="killer"  onkeyup="filterFunction(this,event)">
+                        <ul >
+                            {% for sub in subs %}
+                            {% if sub.is_alive %}
+                            <li>{{sub.membership.user_name}}</li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    killed
+                    <div class="searchable">
+                        <input type="text" placeholder="killed " name="kill"  onkeyup="filterFunction(this,event)">
+                        <ul >
+                            {% for sub in subs %}
+                            {% if sub.is_alive %}
+
+                            <li>{{sub.membership.user_name}}</li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+
                     <br/>
-                <button type="submit" class="btn btn-outline-info">Submit</button>
+                    <button type="submit" class="btn btn-outline-info">Submit</button>
                 </form>
             </div>
         </div>
