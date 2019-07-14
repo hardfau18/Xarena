@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.contrib import messages
 import json
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 class Store(ListView):
@@ -76,7 +77,29 @@ def tourney_detail(request, pk):
 @login_required
 def live_tourney(request, pk):
     tourney = get_object_or_404(Tournament, pk=pk)
+    special = json.loads(tourney.special)
     context = {
+        "special":special,
         "object" : tourney
     }
     return render(request, "tourney/live_tourney.html", context)
+
+
+@staff_member_required
+def tourney_manage(request, pk):
+    if request.method=="POST":
+        print(request.POST)
+        killer = get_object_or_404(Membership, user_name=request.POST.get("killer"))
+        kill = get_object_or_404(Membership, user_name=request.POST.get("kill"))
+        subs = get_object_or_404(Subscription, membership=kill)
+        subs.player_alive = False
+        subs.killed_by = get_object_or_404(Subscription, membership=killer)
+        subs.save()
+        return redirect("tourney_manage", pk=pk)
+    tourney = get_object_or_404(Tournament, pk=pk)
+    context = {
+        "subs":tourney.subscription_set.all(),
+        "object":tourney
+    }
+    return render(request, "tourney/tourney_manage.html", context)
+

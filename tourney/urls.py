@@ -8,5 +8,6 @@ urlpatterns = [
     path("game/<int:pk>/subscribe", views.Subscribe.as_view(), name="subscribe"),
     path("", views.Tourney.as_view(), name = "tournaments"),
     path("<int:pk>/", views.tourney_detail, name="tournament_detail"),
-    path("live-tournaments/<int:pk>", views.live_tourney, name="live_tourney")
+    path("live-tournaments/<int:pk>", views.live_tourney, name="live_tourney"),
+    path("live-tournaments/<int:pk>/manage", views.tourney_manage, name="tourney_manage")
 ]

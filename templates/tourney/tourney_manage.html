@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+<legend class="border-bottom mb-4"> {{object.game.name}} live:- </legend>
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-sm-6" width="350">
+        <div>
+            <img src="{{object.game.image.url}}" width="375">
+            <div class="info">
+                <p>
+                    Game           : {{object.tourney_type}}
+
+                    <br/>
+                    Players Joined : {{object.players_joined}}
+                </p>
+                <form method="post">{% csrf_token %}
+                {% for sub in subs %}
+                {% if sub.player_alive %}
+                <div class="searchable">
+                    <input type="text" placeholder="player" name="killer"  onkeyup="filterFunction(this,event)">
+                    <ul >
+                        <li>{{sub.membership.user_name}}</li>
+                    </ul>
+                </div>
+                killed
+                <div class="searchable">
+                    <input type="text" placeholder="killed " name="kill"  onkeyup="filterFunction(this,event)">
+                    <ul >
+                        <li>{{sub.membership.user_name}}</li>
+
+                    </ul>
+                </div>
+                {% endif %}
+                {% endfor %}
+                    <br/>
+                <button type="submit" class="btn btn-outline-info">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/main.js' %}"></script>
+{% endblock %}
+
+
+
