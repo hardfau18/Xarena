@@ -10,4 +10,5 @@ urlpatterns = [
     path("<int:pk>/", views.tourney_detail, name="tournament_detail"),
     path("live-tournaments/<int:pk>", views.live_tourney, name="live_tourney"),
     path("live-tournaments/<int:pk>/manage", views.tourney_manage, name="tourney_manage")
+
 ]

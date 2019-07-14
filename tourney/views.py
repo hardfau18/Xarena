@@ -48,6 +48,7 @@ def tourney_detail(request, pk):
         return redirect("detail", pk=tourney.game.pk)
 
     if request.method == "POST":
+
         if request.user.profile.account_balance < tourney.price:
             messages.error(request,"sorry your wallet balance is less than tournament price. please add some credits to your wallet")
             return redirect("transfer")
