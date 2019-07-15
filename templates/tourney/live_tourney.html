@@ -14,6 +14,60 @@
             <div class="info">
                 <p>
                     Game           : {{object.tourney_type}}
-
-                <br/>
+                    
+                    <br/>
                     Players Joined : {{object.players_joined}}
+                    <br/>
+                    players Alive  : {{live_players| length }}
+                </p>
+                <p>
+                    <legend class="border-bottom mb-3">Rewards</legend>
+                    First prize    : {{object.first_prize}}
+                    <br/>
+                    Third prize    : {{object.second_prize}}
+                    <br/>
+                    Third prize    : {{object.third_prize}}
+                    <br/>
+                    {% for x,y in special.items %}
+                    {{x}}:{{y}}
+                    {%endfor%}
+                </p>
+                <legend class="border-bottom mb-3">Status</legend>
+                <table class="table table-sm table-dark">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">User Name</th>
+                        <th scope="col">User Id</th>
+                        <th scope="col">kills</th>
+                        <th scope="col">killed by</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for sub in subs %}
+                    {% if sub.is_alive %}
+                    <tr class="bg-success">
+                        {% else %}
+                        <tr class="bg-danger">
+                        {%endif%}
+                        <th scope="row">{{sub.knock_out_number}}</th>
+                        <td>{{sub.membership.user_name}}</td>
+                        <td>{{sub.membership.user_id}}</td>
+                        <td>{{sub.subscription_set.all|length}}</sub></td>
+                        {% if sub.is_alive %}
+                        <td>-</td>
+                        {%else%}
+                        <td>{{sub.killed_by.membership.user_name}}</td>
+                        {%endif%}
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

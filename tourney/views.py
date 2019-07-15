@@ -6,6 +6,8 @@ from .models import Tournament, Subscription
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.contrib import messages
+import json
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 class Store(ListView):
@@ -37,6 +39,7 @@ class Tourney(LoginRequiredMixin, ListView):
     template_name = "tourney/tournaments.html"
 
 
+
 @login_required
 def tourney_detail(request, pk):
     tourney = get_object_or_404(Tournament, pk=pk)
@@ -45,38 +48,26 @@ def tourney_detail(request, pk):
         return redirect("detail", pk=tourney.game.pk)
 
     if request.method == "POST":
-        if request.user not in tourney.players.all():
-            tourney.players.add(request.user)
-        subscription = get_object_or_404(Subscription, tourney=tourney, player=request.user)
-        subscription.membership = request.user.membership_set.get(game=tourney.game)
-        subscription.save()
-        if subscription.player_joined:
-            return redirect("tournaments")
 
-        oid = subscription.pk
-        price = tourney.price
-        params = {
-            "MID": "eJvkxV73534228896310",
-            "ORDER_ID": str(oid),
-            "CUST_ID": request.user.email,
-            "TXN_AMOUNT": str(price),
-            "CHANNEL_ID": "WEB",
-            "INDUSTRY_TYPE_ID": "Retail",
-            "WEBSITE": "WEBSTAGING",
-            'CALLBACK_URL': 'http://13.127.178.253/tournaments/handle-request'
-        }
+        if request.user.profile.account_balance < tourney.price:
+            messages.error(request,"sorry your wallet balance is less than tournament price. please add some credits to your wallet")
+            return redirect("transfer")
+        if request.user in tourney.players.all():
+            messages.warning("you are already in tournament")
+            return redirect("tournament_detail", pk = tourney.pk)
+        user_acc = request.user.profile
+        user_acc.account_balance -= tourney.price
+        user_acc.save()
+        tourney.players.add(request.user)
+        return redirect("tournament_detail", pk = tourney.pk)
 
-        params["CHECKSUMHASH"] = checksum.generate_checksum(params, merchant_key)
-        return render(request, "tourney/paytm.html", {"params":params})
-
-    if request.user in tourney.players.all() and Subscription.objects.get(tourney=tourney, player=request.user).player_joined :
+    if request.user in tourney.players.all() :
         user_exist = tourney.players.get(id=request.user.id).username
     else:
         user_exist = ""
-        if request.user in tourney.players.all():
-            tourney.players.remove(request.user)
-
+    special = json.loads(tourney.special)
     context = {
+        "special":special,
         "user_exist": user_exist,
         "object": tourney
     }
@@ -84,5 +75,49 @@ def tourney_detail(request, pk):
     return render(request, "tourney/tournament_detail.html", context)
 
 
+@login_required
+def live_tourney(request, pk):
+    tourney = get_object_or_404(Tournament, pk=pk)
+    special = json.loads(tourney.special)
 
+    context = {
+        "live_players":[x for x in tourney.subscription_set.all() if x.is_alive],
+        "subs": tourney.subscription_set.all(),
+        "special":special,
+        "object" : tourney
+    }
+    return render(request, "tourney/live_tourney.html", context)
+
+
+@staff_member_required
+def tourney_manage(request, pk):
+    tourney = get_object_or_404(Tournament, pk=pk)
+    if tourney.tourney_end:
+        messages.warning(request, "Tournament has ended")
+        return redirect("store")
+    players = len(tourney.players.all())
+    if request.method=="POST":
+        killer = get_object_or_404(Membership, user_name=request.POST.get("killer"))
+        kill = get_object_or_404(Membership, user_name=request.POST.get("kill"))
+        subs = get_object_or_404(Subscription, membership=kill)
+        subs.is_alive = False
+        subs.killed_by = get_object_or_404(Subscription, membership=killer)
+        subs.knock_out_number = players - tourney.knocked
+        subs.save()
+        tourney.knocked += 1
+        tourney.save()
+        if tourney.knocked == players -1 :
+            print("success")
+            s=Subscription.objects.get(is_alive=True)
+            s.knock_out_number = 1
+            s.save()
+            tourney.tourney_end = True
+            tourney.save()
+        return redirect("tourney_manage", pk=pk)
+
+    context = {
+        "subs": tourney.subscription_set.all().order_by('membership'),
+        "object":tourney
+    }
+    return render(request, "tourney/tourney_manage.html", context)
 

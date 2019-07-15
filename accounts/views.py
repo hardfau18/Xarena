@@ -144,9 +144,13 @@ def money_transfer(request):
             if request.POST.get("toggle_option") == "deposit":
                 order.transaction_type = "deposit"
                 order.save()
-                request.user.profile.account_balance -= int(form.data['amount'])
+                obj = request.user.profile
+                obj.account_balance -= int(form.data['amount'])
                 request.user.profile.save()
             elif request.POST.get("toggle_option") == "withdraw":
+                if form["amount"]>balance:
+                    messages.error(request,"You don't have enough balance in your wallet")
+                    return render(request, "accounts/transfer.html", {"form":form})
                 order.transaction_type = "withdraw"
                 order.save()
                 params = {

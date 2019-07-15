@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from accounts.models import Game, Membership
 from django.utils import timezone
+from django.contrib.postgres.fields import ArrayField
 
 
 class Tournament(models.Model):
@@ -16,7 +17,9 @@ class Tournament(models.Model):
     first_prize = models.IntegerField()
     second_prize = models.IntegerField()
     third_prize = models.IntegerField()
-    prize_per_kill = models.IntegerField(null=True, blank=True)
+    tourney_end = models.BooleanField(default=False)
+    special = models.TextField(null=True, blank=True)
+    knocked = models.PositiveIntegerField(default=0)
 
     def is_live(self):
         return True if self.time <= timezone.now() else False
@@ -33,9 +36,10 @@ class Subscription(models.Model):
     player = models.ForeignKey(User, on_delete=models.CASCADE)
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE, null=True)
     subscription_id = models.AutoField(primary_key=True,)
-    player_joined = models.BooleanField(default=False)
+    is_alive = models.BooleanField(default=True,blank=True)
+    killed_by = models.ForeignKey("self", on_delete=models.SET_NULL, blank=True, null=True)
+    knock_out_number = models.PositiveIntegerField(default=None, null=True, blank=True)
 
     def __str__(self):
         return self.player.username + "_" + self.tourney.game.name
-
 
