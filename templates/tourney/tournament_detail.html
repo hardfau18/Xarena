@@ -12,6 +12,9 @@
         <div>
             <img src="{{object.game.image.url}}" width="375">
             <div class="info">
+		    {% if user.is_staff %}
+		    <a class="btn btn-outline-info" href="{% url 'tourney_manage' object.pk %}">Manage</a>
+		    {%endif%}
                 <p>
                     Game           : {{object.tourney_type}}
                     <br/>
