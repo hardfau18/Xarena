@@ -116,7 +116,7 @@ def tourney_manage(request, pk):
         return redirect("tourney_manage", pk=pk)
 
     context = {
-        "subs": tourney.subscription_set.all(),
+        "subs": tourney.subscription_set.all().order_by('membership'),
         "object":tourney
     }
     return render(request, "tourney/tourney_manage.html", context)

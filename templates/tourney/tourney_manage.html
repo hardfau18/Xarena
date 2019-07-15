@@ -46,7 +46,36 @@
                     <br/>
                     <button type="submit" class="btn btn-outline-info">Submit</button>
                 </form>
+                <br/>
+                <br/>
+                <br/>
+                <p>
+                    <legend class="border-bottom mb-3">Players List</legend>
+                <table class="table table-sm table-dark">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">User Name</th>
+                        <th scope="col">User Id</th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sub in subs %}
+                    <tr class="bg-success">
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{sub.membership.user_name}}</td>
+                        <td>{{sub.membership.user_id}}</td>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+
             </div>
+
         </div>
     </div>
 </div>
