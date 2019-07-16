@@ -149,7 +149,7 @@ def money_transfer(request):
                 order.save()
                 obj = request.user.profile
                 obj.account_balance -= int(form.data['amount'])
-                request.user.profile.save()
+                obj.save()
             elif request.POST.get("toggle_option") == "deposit":
                 order.transaction_type = "deposit"
                 order.save()
