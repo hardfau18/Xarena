@@ -151,7 +151,6 @@ def money_transfer(request):
                 obj.account_balance -= int(form.data['amount'])
                 request.user.profile.save()
             elif request.POST.get("toggle_option") == "deposit":
-
                 order.transaction_type = "withdraw"
                 order.save()
                 params = {
@@ -162,7 +161,7 @@ def money_transfer(request):
                     "CHANNEL_ID": "WEB",
                     "INDUSTRY_TYPE_ID": "Retail",
                     "WEBSITE": "WEBSTAGING",
-                    'CALLBACK_URL': 'http://http://13.127.178.253//accounts/profile/trans-status'
+                    'CALLBACK_URL': 'http://localhost:8000/accounts/profile/trans-status'
                 }
                 params["CHECKSUMHASH"] = checksum.generate_checksum(params, merchant_key)
                 return render(request, "accounts/paytm.html", {"params": params})
