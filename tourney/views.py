@@ -10,6 +10,26 @@ import json
 from django.contrib.admin.views.decorators import staff_member_required
 
 
+def distribute_prize(t):
+    players = t.subscription_set
+    first = players.get(knock_out_number=1)
+    first.player.profile.account_balance += t.first_prize
+    first.player.profile.save()
+
+    second = players.get(knock_out_number=2)
+    second.player.profile.account_balance += t.second_prize
+    second.player.profile.save()
+
+    third = players.get(knock_out_number=3)
+    third.player.profile.account_balance += t.third_prize
+    third.player.profile.save()
+
+    if t.special :
+        for sub in players.all():
+            sub.player.profile.account_balance += len(sub.subscription_set.all()) * json.loads(t.special)["prize_per_kill"]
+            sub.player.profile.save()
+
+
 class Store(ListView):
     template_name = 'tourney/store_list.html'
     model = Game
@@ -37,6 +57,7 @@ class Subscribe(LoginRequiredMixin,CreateView):
 class Tourney(LoginRequiredMixin, ListView):
     model = Tournament
     template_name = "tourney/tournaments.html"
+
 
 
 
@@ -106,12 +127,13 @@ def tourney_manage(request, pk):
         subs.save()
         tourney.knocked += 1
         tourney.save()
-        if tourney.knocked == players -1 :
+        if tourney.knocked == players - 1:
             print("success")
             s=Subscription.objects.get(is_alive=True)
             s.knock_out_number = 1
             s.save()
             tourney.tourney_end = True
+            distribute_prize(tourney)
             tourney.save()
         return redirect("tourney_manage", pk=pk)
 
@@ -121,3 +143,15 @@ def tourney_manage(request, pk):
     }
     return render(request, "tourney/tourney_manage.html", context)
 
+
+@login_required
+def tourney_results(request, pk):
+    tourney = get_object_or_404(Tournament, pk=pk)
+    context = {
+        "object":tourney,
+        "first":tourney.subscription_set.get(knock_out_number=1).membership.user_name,
+        "second":tourney.subscription_set.get(knock_out_number=2).membership.user_name,
+        "third":tourney.subscription_set.get(knock_out_number=3).membership.user_name,
+        "subs": tourney.subscription_set.all().order_by('membership')
+    }
+    return render(request, "tourney/tourney_results.html", context)
