@@ -141,16 +141,16 @@ def money_transfer(request):
             order = form.save(commit=False)
             order.user = request.user
 
-            if request.POST.get("toggle_option") == "deposit":
+            if request.POST.get("toggle_option") == "withdraw":
+                if form.cleaned_data["amount"]>balance:
+                    messages.error(request,"You don't have enough balance in your wallet")
+                    return render(request, "accounts/transfer.html", {"form":form})
                 order.transaction_type = "deposit"
                 order.save()
                 obj = request.user.profile
                 obj.account_balance -= int(form.data['amount'])
                 request.user.profile.save()
-            elif request.POST.get("toggle_option") == "withdraw":
-                if form["amount"]>balance:
-                    messages.error(request,"You don't have enough balance in your wallet")
-                    return render(request, "accounts/transfer.html", {"form":form})
+            elif request.POST.get("toggle_option") == "deposit":
                 order.transaction_type = "withdraw"
                 order.save()
                 params = {
@@ -161,7 +161,7 @@ def money_transfer(request):
                     "CHANNEL_ID": "WEB",
                     "INDUSTRY_TYPE_ID": "Retail",
                     "WEBSITE": "WEBSTAGING",
-                    'CALLBACK_URL': 'http://http://13.127.178.253//accounts/profile/trans-status'
+                    'CALLBACK_URL': 'http://localhost:8000/accounts/profile/trans-status'
                 }
                 params["CHECKSUMHASH"] = checksum.generate_checksum(params, merchant_key)
                 return render(request, "accounts/paytm.html", {"params": params})
