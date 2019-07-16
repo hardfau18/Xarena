@@ -22,7 +22,7 @@ class Tournament(models.Model):
     knocked = models.PositiveIntegerField(default=0)
 
     def is_live(self):
-        return True if self.time <= timezone.now() else False
+        return True if self.time <= timezone.now() and not self.tourney_end else False
 
     def __str__(self):
         return self.game.name
@@ -38,7 +38,7 @@ class Subscription(models.Model):
     subscription_id = models.AutoField(primary_key=True,)
     is_alive = models.BooleanField(default=True,blank=True)
     killed_by = models.ForeignKey("self", on_delete=models.SET_NULL, blank=True, null=True)
-    knock_out_number = models.PositiveIntegerField(default=None, null=True, blank=True)
+    knock_out_number = models.PositiveIntegerField(default=None, null=True, blank=True, unique=True)
 
     def __str__(self):
         return self.player.username + "_" + self.tourney.game.name

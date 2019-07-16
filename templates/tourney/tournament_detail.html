@@ -62,8 +62,10 @@
                 </p>
                 {% endif %}
 
+                {% elif object.is_live %}
+                 <a class="btn btn-outline-info" href="{% url 'live_tourney' object.pk %}">Status</a>
                 {% else %}
-                 <a class="btn btn-outline-info" href="#">Live</a>
+                 <a class="btn btn-outline-info" href="{% url 'live_tourney' object.pk %}">Results</a>
                 {% endif %}
                 <br/>
 

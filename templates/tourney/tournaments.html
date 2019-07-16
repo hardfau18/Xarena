@@ -6,31 +6,117 @@
 {% endblock %}
 
 {% block content %}
-{% for instance in object_list %}
-<div class="row">
-    <div class="col-md-6 col-sm-6" width="350">
-        <div>
-            <legend class="border-bottom mb-6"> {{instance.game.name}} </legend>
-                <img class="mb-3" src="{{instance.game.image.url}}" width="375">
-            <div class="info">
-                <div class="form-group">
 
-                    <p>Tournament type :- {{ instance.tourney_type }}
-                    <br/>
-                    Entry Fee :- {{ instance.price }} in INR
-                    </p>
 
-                    <a class="btn btn-outline-info" href="{% url 'tournament_detail' instance.pk %}">Detail</a>
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-upcoming-tab" data-toggle="tab" href="#nav-upcoming" role="tab" aria-controls="nav-end" aria-selected="true">Upcoming</a>
+        <a class="nav-item nav-link" id="nav-live-tab" data-toggle="tab" href="#nav-live" role="tab" aria-controls="nav-end" aria-selected="false">Live</a>
+        <a class="nav-item nav-link" id="nav-end-tab" data-toggle="tab" href="#nav-end" role="tab" aria-controls="nav-end" aria-selected="false">Ended</a>
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade " id="nav-end" role="tabpanel" aria-labelledby="nav-end-tab">
 
+        <br/>
+        {% for instance in object_list %}
+        {%if instance.tourney_end %}
+        <div class="row">
+            <div class="col-md-6 col-sm-6" width="350">
+                <div>
+                    <legend class=" mb-6"> {{instance.game.name}} </legend>
+                    <img class="mb-3" src="{{instance.game.image.url}}" width="375">
+                    <div class="info">
+                        <div class="form-group">
+
+                            <p>Tournament type :- {{ instance.tourney_type }}
+                                <br/>
+                                Entry Fee :- {{ instance.price }} in INR
+                            </p>
+
+                            <a class="btn btn-outline-info" href="{% url 'tournament_result' instance.pk %}">Results</a>
+
+                        </div>
+                        <p>
+                        </p>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </div>
                 </div>
-                <p>
-                </p>
-                <br/>
-                <br/>
-                <br/>
             </div>
         </div>
+        {%endif%}
+        {% endfor %}
+
+    </div>
+    <div class="tab-pane fade" id="nav-live" role="tabpanel" aria-labelledby="nav-live-tab">
+
+        <br/>
+        {% for instance in object_list %}
+        {%if instance.is_live %}
+        <div class="row">
+            <div class="col-md-6 col-sm-6" width="350">
+                <div>
+                    <legend class=" mb-6"> {{instance.game.name}} </legend>
+                    <img class="mb-3" src="{{instance.game.image.url}}" width="375">
+                    <div class="info">
+                        <div class="form-group">
+
+                            <p>Tournament type :- {{ instance.tourney_type }}
+                                <br/>
+                                Entry Fee :- {{ instance.price }} in INR
+                            </p>
+
+                            <a class="btn btn-outline-info" href="{% url 'tournament_detail' instance.pk %}">Detail</a>
+
+                        </div>
+                        <p>
+                        </p>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%endif%}
+        {% endfor %}
+    </div>
+    <div class="tab-pane fade show active" id="nav-upcoming" role="tabpanel" aria-labelledby="nav-upcoming-tab">
+
+        <br/>
+        {% for instance in object_list %}
+        {%if not instance.tourney_end and not instance.is_live %}
+        <div class="row">
+            <div class="col-md-6 col-sm-6" width="350">
+                <div>
+                    <legend class=" mb-6"> {{instance.game.name}} </legend>
+                    <img class="mb-3" src="{{instance.game.image.url}}" width="375">
+                    <div class="info">
+                        <div class="form-group">
+
+                            <p>Tournament type :- {{ instance.tourney_type }}
+                                <br/>
+                                Entry Fee :- {{ instance.price }} in INR
+                            </p>
+
+                            <a class="btn btn-outline-info" href="{% url 'tournament_detail' instance.pk %}">Detail</a>
+
+                        </div>
+                        <p>
+                        </p>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%endif%}
+        {% endfor %}
     </div>
 </div>
-{% endfor %}
+
+
 {% endblock %}
