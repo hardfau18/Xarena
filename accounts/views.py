@@ -161,7 +161,7 @@ def money_transfer(request):
                     "CHANNEL_ID": "WEB",
                     "INDUSTRY_TYPE_ID": "Retail",
                     "WEBSITE": "WEBSTAGING",
-                    'CALLBACK_URL': 'http://localhost:8000/accounts/profile/trans-status'
+                    'CALLBACK_URL': 'http://13.127.178.253/accounts/profile/trans-status'
                 }
                 params["CHECKSUMHASH"] = checksum.generate_checksum(params, merchant_key)
                 return render(request, "accounts/paytm.html", {"params": params})
