@@ -99,6 +99,9 @@ def tourney_detail(request, pk):
 @login_required
 def live_tourney(request, pk):
     tourney = get_object_or_404(Tournament, pk=pk)
+    if tourney.tourney_end:
+        messages.warning(request, "Tournament has ended")
+        return redirect("tournament_result", pk=pk)
     special = json.loads(tourney.special)
 
     context = {
@@ -115,7 +118,7 @@ def tourney_manage(request, pk):
     tourney = get_object_or_404(Tournament, pk=pk)
     if tourney.tourney_end:
         messages.warning(request, "Tournament has ended")
-        return redirect("store")
+        return redirect("tournament_result", pk=pk)
     players = len(tourney.players.all())
     if request.method=="POST":
         killer = get_object_or_404(Membership, user_name=request.POST.get("killer"))
