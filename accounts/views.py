@@ -80,10 +80,8 @@ def activate(request, uidb64, token):
 def profile(request):
     if request.method == "POST":
         u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        if u_form.is_valid() and p_form.is_valid():
+        if u_form.is_valid() :
             u_form.save()
-            p_form.save()
             messages.success(request, f" Your account has been modified.")
             return redirect("profile")
     else:
@@ -96,6 +94,15 @@ def profile(request):
         "games":request.user.membership_set.all()[1:] if len(request.user.membership_set.all())>0 else None
     }
     return render(request, "accounts/profile.html", context)
+
+@login_required
+def image_upload(request):
+    if request.method =="POST":
+        image = ProfileUpdateForm(request.POST, request.FIles, instance=request.user.profile)
+        if image.is_valid():
+            image.save()
+            messages.success(request,"Image has been changed")
+            return redirect("profile")
 
 
 class UpdateSubscription(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
