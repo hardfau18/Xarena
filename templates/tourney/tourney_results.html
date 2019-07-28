@@ -2,15 +2,15 @@
 {% load static %}
 {% block head %}
 
-<legend class="border-bottom mb-4"> {{object.game.name}} live:- </legend>
+<h1>{{object.game.name}} live </h1>
 
 {% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-md-6 col-sm-6" width="350">
+    <div class="col-md-6 col-sm-6">
         <div>
-            <img src="{{object.game.image.url}}" width="375">
+            <img src="{{object.game.image.url}}" width="100%">
             <div class="info">
 
                 <p>
