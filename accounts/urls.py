@@ -14,6 +14,7 @@ urlpatterns = [
     path("password-reset-complete/", auth_views.PasswordResetCompleteView.as_view(template_name="accounts/password_reset_complete.html"), name="password_reset_complete"),
     path("activate/<uidb64>/<token>/", views.activate, name = "activate"),
     path("profile/", views.profile, name="profile"),
+    path("profile/image-upload", views.image_upload, name="image_upload"),
     path("profile/update-info/<int:pk>/", views.UpdateSubscription.as_view(), name="update_subscription"),
     path("profile/update-info/<int:pk>/delete", views.DeleteSubscription.as_view(), name="delete_subscription"),
     path("profile/transfer", views.money_transfer, name= "transfer"),
