@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     {% load static %}
     <meta charset="UTF-8">
@@ -46,39 +46,58 @@
 <!-- nav bar end -->
 
 
+    <!--BREADCRUMBS BEGIN-->
+<section class="image-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info">
+                    <div class="wrap">
+                        <ul class="breadcrumbs">
+                            <li><a href="{% url 'index' %}">Main</a>/</li>
+                            <li>Category</li>
+                        </ul>
 
+{% block head %}
+{% endblock head %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--BREADCRUMBS END-->
 
 <div class="container">
-{% if messages %}
-{% for message in messages %}
+    {% if messages %}
+    {% for message in messages %}
     <div class="alert alert-{{message.tags}}"> {{message}} </div>
-{% endfor %}
-{% endif %}
-        {% block head %}
-        {% endblock head %}
-            {% block content %}
-            {% endblock content %}
+    {% endfor %}
+    {% endif %}
+
+    {% block content %}
+    {% endblock content %}
     <br/>
     <br/>
 
 </div>
-    <footer class="footer">
-        <div class="row">
-                <div class="col-md-6">
-                    <p>Copyright © 2019 Xarena gaming</p>
-                </div>
-                <div class="col-md-6 text-md-right">
-                    <a href="#" >Terms of Use</a>
-                    <span class="text-muted mx-2">|</span>
-                    <a href="#" >Privacy Policy</a>
-                </div>
-
+<footer class="footer">
+    <div class="row">
+        <div class="col-md-6">
+            <p>Copyright © 2019 Xarena gaming</p>
         </div>
-    </footer>
-</body>
-    <script src=" {% static 'js/bootstrap.bundle.min.js' %}"></script>
+        <div class="col-md-6 text-md-right">
+            <a href="#" >Terms of Use</a>
+            <span class="text-muted mx-2">|</span>
+            <a href="#" >Privacy Policy</a>
+        </div>
 
-    <script src="{% static 'js/popper.min.js' %}"></script>
+    </div>
+</footer>
+</body>
+<script src=" {% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+<script src="{% static 'js/popper.min.js' %}"></script>
 </html>
 
 
@@ -104,7 +123,7 @@
 
 
 
- <!--
+<!--
 
 
 

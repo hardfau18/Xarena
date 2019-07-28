@@ -2,14 +2,14 @@
 {% load crispy_forms_tags %}
 
 {% block head %}
-<legend class="border-bottom mb-4"> {{object.title}} </legend>
+<h1> {{object.title}}</h1>
 {% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-md-6 col-sm-6" width="350">
+    <div class="col-md-6 col-sm-6">
         <div>
-            <img src="{{object.image.url}}" width="375">
+            <img src="{{object.image.url}}" width="100%">
             <div class="info">
                 <div class="form-group">
                     <a class="btn  btn-outline-info" href="{% url 'subscribe' object.pk  %}">Subscribe</a>

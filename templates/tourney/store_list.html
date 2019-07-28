@@ -2,18 +2,18 @@
 {% load crispy_forms_tags %}
 {% block head %}
 
-<legend class="border-bottom mb-4"> Store:~ </legend>
+<h1> Store:</h1>
 
 {% endblock %}
 
 {% block content %}
 {% for instance in object_list %}
 <div class="row">
-    <div class="col-md-6 col-sm-6" width="350">
+    <div class="col-md-6 col-sm-6">
         <div>
             <legend class="border-bottom mb-6"> {{instance.name}} </legend>
             <a href="{% url 'detail' instance.id %}">
-                <img src="{{instance.image.url}}" width="375">
+                <img src="{{instance.image.url}}" width="100%">
             </a>
             <div class="info">
                 <div class="form-group">
