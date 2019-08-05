@@ -16,7 +16,7 @@
     <title>Xarena</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-3">
+<nav class="navbar navbar-expand-md sticky-top navbar-dark bg-dark ">
     <div class="container-fluid">
         <a href="#" class="navbar-brand mr-3">Xarena</a>
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
@@ -45,10 +45,12 @@
 </nav>
 <!-- nav bar end -->
 
+{% if request.path != "/" %}
 
-    <!--BREADCRUMBS BEGIN-->
+<!--BREADCRUMBS BEGIN-->
+
 <section class="image-header">
-    <div class="container">
+    <div class="container ">
         <div class="row">
             <div class="col-md-6">
                 <div class="info">
@@ -58,17 +60,22 @@
                             <li>Category</li>
                         </ul>
 
-{% block head %}
-{% endblock head %}
+                        {% block head %}
+                        {% endblock head %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<br/>
+<br/>
 <!--BREADCRUMBS END-->
 
-<div class="container">
+{% endif%}
+{% block home %}
+{% endblock%}
+<div class="container ">
     {% if messages %}
     {% for message in messages %}
     <div class="alert alert-{{message.tags}}"> {{message}} </div>
@@ -78,7 +85,7 @@
     {% block content %}
     {% endblock content %}
     <br/>
-    <br/>
+
 
 </div>
 <footer class="footer">
