@@ -143,7 +143,6 @@ def money_transfer(request):
     if request.method == "POST":
         form = AmountTransfer(request.POST)
         balance = request.user.profile.account_balance
-        print(balance)
         if form.is_valid():
             order = form.save(commit=False)
             order.user = request.user
