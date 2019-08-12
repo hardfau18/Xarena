@@ -13,11 +13,15 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse,  HttpResponseBadRequest
 from django.views.generic import UpdateView, DeleteView
 from django.shortcuts import get_object_or_404
-from .models import Membership, Order
+from .models import Membership, Order,ReqMoneyBack
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from django.views.decorators.csrf import csrf_exempt
 from paytm import checksum
+from django.contrib.admin.views.decorators import staff_member_required
+from django.views.generic import ListView
+from django.utils.decorators import method_decorator
+
 merchant_key = '5N1ZW7zBgXCoOiRZ'
 
 
@@ -80,8 +84,10 @@ def activate(request, uidb64, token):
 def profile(request):
     if request.method == "POST":
         u_form = UserUpdateForm(request.POST, instance=request.user)
-        if u_form.is_valid() :
+        p_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
+        if u_form.is_valid() and p_form.is_valid() :
             u_form.save()
+            p_form.save()
             messages.success(request, f" Your account has been modified.")
             return redirect("profile")
     else:
@@ -148,6 +154,9 @@ def money_transfer(request):
             order.user = request.user
 
             if request.POST.get("toggle_option") == "withdraw":
+                if request.user.profile.account_number is None:
+                    messages.error(request, "No account number!!! Please enter the account number in your profile and save.")
+                    return redirect("profile")
                 if form.cleaned_data["amount"]>balance:
                     messages.error(request,"You don't have enough balance in your wallet")
                     return render(request, "accounts/transfer.html", {"form":form})
@@ -156,6 +165,9 @@ def money_transfer(request):
                 obj = request.user.profile
                 obj.account_balance -= int(form.data['amount'])
                 obj.save()
+                ReqMoneyBack.objects.create(user=request.user,amount=int(form.data['amount']))
+                messages.success(request, f"Your request to transfer money to {request.user.profile.account_number} of {form.data['amount']} has sent. ")
+                return redirect("profile")
             elif request.POST.get("toggle_option") == "deposit":
                 order.transaction_type = "deposit"
                 order.save()
@@ -204,3 +216,25 @@ def trans_status(request):
     else:
         return HttpResponse("unkown error contact us")
     return render(request, "accounts/payment_status.html", response)
+
+@method_decorator(staff_member_required, name="dispatch")
+class MoneyRequests(ListView):
+    template_name = "accounts/money-requests.html"
+    paginate_by = 10
+    queryset = ReqMoneyBack.objects.filter(trans_status=False)
+
+
+@staff_member_required
+def money_req_handle(request):
+    if request.method=="POST":
+        req=get_object_or_404(ReqMoneyBack,pk=request.POST.get("id"))
+        req.trans_status = True
+        req.save()
+        messages.success(request,f"transaction on order {req.pk} is success.")
+        return redirect("money_req")
+    else:
+        return HttpResponseBadRequest()
+
+
+
+
