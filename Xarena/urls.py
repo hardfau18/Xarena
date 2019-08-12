@@ -23,7 +23,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/", include("accounts.urls")),
     path("tournaments/", include("tourney.urls")),
-    path("", views.index, name = "index" )
+    path("", views.index, name = "index" ),
+    path("t&c/", views.t_and_c, name="t_and_c"),
+    path("privay-policy/", views.privacy_policy, name="privacy_policy")
 ]
 
 if settings.DEBUG:
