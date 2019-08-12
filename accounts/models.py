@@ -24,6 +24,7 @@ class Profile(models.Model):
     image = models.ImageField(upload_to="images/profile_pics", default="images/profile_pics/default.png")
     email_confirmed = models.BooleanField(default=False)
     account_balance = models.PositiveIntegerField(default=0)
+    account_number = models.PositiveIntegerField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username} profile"
@@ -64,3 +65,14 @@ class Order(models.Model):
     )
     transaction_type = models.CharField(max_length=8, choices=TRANSACTION_TYPE)
     transaction_success = models.BooleanField(default=False)
+
+
+class ReqMoneyBack(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.PositiveIntegerField(default=0)
+    trans_status = models.BooleanField(default=False)
+    request_date = models.TimeField(auto_now_add=True)
+    finish_date = models.TimeField(auto_now=True)
+
+    def __str__(self):
+        return self.user.username+" "+str(self.amount)

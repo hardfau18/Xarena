@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block head %}
+
+<h1> Requests</h1>
+
+{% endblock %}
+
+{% block content %}
+<div class="list-group">
+    {% for instance in object_list %}
+
+
+
+
+
+    <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{instance.user}}</h5>
+
+
+
+        <form method="post" action="{%url 'money_req_handle'%}">
+            {% csrf_token %}
+                <input type="hidden" name="id" value="{{instance.pk}}">
+            <small><button type="submit" class="btn  btn-outline-info">paid</button></small>
+        </form>
+
+
+    </div>
+
+    <p class="list-group-item d-flex justify-content-between align-items-center mb-1">
+        {{instance.user.profile.account_number}}
+        <span class="badge badge-primary badge-pill">{{instance.amount}}</span>
+
+        </ul>
+
+    </p>
+    <small>{{instance.request_date}}</small>
+
+<br/>
+    {% endfor %}
+</div>
+{% endblock %}
