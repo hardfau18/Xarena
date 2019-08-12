@@ -10,6 +10,7 @@ urlpatterns = [
     path("upcoming/<int:pk>/", views.tourney_detail, name="tournament_detail"),
     path("live-tournaments/<int:pk>/", views.live_tourney, name="live_tourney"),
     path("live-tournaments/<int:pk>/manage", views.tourney_manage, name="tourney_manage"),
+    path("live-tournaments/<int:pk>/manage/survival", views.survival_tourney_manage, name="tourney_manage_Survival"),
     path("results/<int:pk>/", views.tourney_results, name="tournament_result")
 
 ]

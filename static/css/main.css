@@ -355,5 +355,12 @@ body {
   line-height: 1.5;
   color: #212529;
   text-align: left;
-  background-color: #343a40;
+  background-color: #100e17;
+}
+
+.center{
+display:block;
+margin-left:auto;
+margin-right:auto;
+width:80%;
 }

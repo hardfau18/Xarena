@@ -16,7 +16,8 @@
 		    <a class="btn btn-outline-info" href="{% url 'tourney_manage' object.pk %}">Manage</a>
 		    {%endif%}
                 <p>
-                    Game           : {{object.tourney_type}}
+                    <br/>
+                    Game mode          : {{object.tourney_type}}
                     <br/>
                     Time           : {{object.time}}
                     <br/>
@@ -24,18 +25,19 @@
                     <br/>
                     Players Joined : {{object.players_joined}}
                     <br/>
-                    Price          : {{object.price}} in INR
+                    Entry Fee      : {{object.entry_fee}} in INR
+                    <br/>
+                    <br/>
                     <legend class="border-bottom mb-3">Rewards</legend>
                     First prize    : {{object.first_prize}}
                     <br/>
-                    Third prize    : {{object.second_prize}}
+                    Second prize    : {{object.second_prize}}
                     <br/>
                     Third prize    : {{object.third_prize}}
                     <br/>
-                    {% for x,y in special.items %}
-                    {{x}}:{{y}}
-                    {%endfor%}
-
+                    prize per {{object.tourney_type.bonus}}:{{object.bonus_prize}} in INR
+                    <br/>
+                    <br/>
                 </p>
                 <input type="hidden" id="datetime" name="variable" value="{{ object.time.isoformat }}">
                 {% if not object.is_live %}
@@ -65,7 +67,7 @@
                 {% elif object.is_live %}
                  <a class="btn btn-outline-info" href="{% url 'live_tourney' object.pk %}">Status</a>
                 {% else %}
-                 <a class="btn btn-outline-info" href="{% url 'live_tourney' object.pk %}">Results</a>
+                 <a class="btn btn-outline-info" href="{% url 'tournament_result' object.pk %}">Results</a>
                 {% endif %}
                 <br/>
 

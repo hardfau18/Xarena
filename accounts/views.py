@@ -21,6 +21,7 @@ from paytm import checksum
 merchant_key = '5N1ZW7zBgXCoOiRZ'
 
 
+
 def target(request):
     if request.user.is_authenticated:
         return redirect("profile")

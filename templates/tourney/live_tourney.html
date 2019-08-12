@@ -16,7 +16,7 @@
 		    <a class="btn btn-outline-info" href="{%url 'tourney_manage' object.pk%}">Manage</a>
 		    {%endif%}
                 <p>
-                    Game           : {{object.tourney_type}}
+                    Game mode      : {{object.tourney_type}}
                     
                     <br/>
                     Players Joined : {{object.players_joined}}
@@ -31,9 +31,9 @@
                     <br/>
                     Third prize    : {{object.third_prize}}
                     <br/>
-                    {% for x,y in special.items %}
-                    {{x}}:{{y}}
-                    {%endfor%}
+                    prize per {{object.tourney_type.bonus}}:{{object.bonus_prize}} in INR
+                    <br/>
+                    <br/>
                 </p>
                 <legend class="border-bottom mb-3">Status</legend>
                 <table class="table table-sm table-dark">
@@ -50,19 +50,19 @@
                     <tbody>
 
                     {% for sub in subs %}
-                    {% if sub.is_alive %}
+                    {% if sub.active %}
                     <tr class="bg-success">
                         {% else %}
                         <tr class="bg-danger">
                         {%endif%}
-                        <th scope="row">{{sub.knock_out_number}}</th>
+                        <th scope="row">{{sub.elimination_number}}</th>
                         <td>{{sub.membership.user_name}}</td>
                         <td>{{sub.membership.user_id}}</td>
                         <td>{{sub.subscription_set.all|length}}</sub></td>
                         {% if sub.is_alive %}
                         <td>-</td>
                         {%else%}
-                        <td>{{sub.killed_by.membership.user_name}}</td>
+                        <td>{{sub.eliminated_by.membership.user_name}}</td>
                         {%endif%}
                     </tr>
                     {% endfor %}
