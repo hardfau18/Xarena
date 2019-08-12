@@ -44,19 +44,19 @@
                     <tbody>
 
                     {% for sub in subs %}
-                    {% if sub.is_alive %}
+                    {% if sub.active %}
                     <tr class="bg-success">
                         {% else %}
                         <tr class="bg-danger">
                         {%endif%}
-                        <th scope="row">{{sub.knock_out_number}}</th>
+                        <th scope="row">{{sub.elimination_number}}</th>
                         <td>{{sub.membership.user_name}}</td>
                         <td>{{sub.membership.user_id}}</td>
                         <td>{{sub.subscription_set.all|length}}</sub></td>
                         {% if sub.is_alive %}
                         <td>-</td>
                         {%else%}
-                        <td>{{sub.killed_by.membership.user_name}}</td>
+                        <td>{{sub.eliminated_by.membership.user_name}}</td>
                         {%endif%}
                     </tr>
                     {% endfor %}
