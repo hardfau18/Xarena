@@ -16,7 +16,7 @@
 		    <a class="btn btn-outline-info" href="{% url 'tourney_manage' object.pk %}">Manage</a>
 		    {%endif%}
                 <p>
-                    Game           : {{object.tourney_type}}
+                    Game mode      : {{object.tourney_type}}
                     <br/>
                     Time           : {{object.time}}
                     <br/>
@@ -24,7 +24,7 @@
                     <br/>
                     Players Joined : {{object.players_joined}}
                     <br/>
-                    Price          : {{object.price}} in INR
+                    Entrance fee   : {{object.entry_fee}} in INR
                     <legend class="border-bottom mb-3">Rewards</legend>
                     First prize    : {{object.first_prize}}
                     <br/>
@@ -32,9 +32,7 @@
                     <br/>
                     Third prize    : {{object.third_prize}}
                     <br/>
-                    {% for x,y in special.items %}
-                    {{x}}:{{y}}
-                    {%endfor%}
+                    prize per {{object.tourney_type.bonus}} : {{object.bonus}} in INR
 
                 </p>
                 <input type="hidden" id="datetime" name="variable" value="{{ object.time.isoformat }}">

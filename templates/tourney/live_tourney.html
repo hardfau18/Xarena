@@ -31,9 +31,9 @@
                     <br/>
                     Third prize    : {{object.third_prize}}
                     <br/>
-                    {% for x,y in special.items %}
-                    {{x}}:{{y}}
-                    {%endfor%}
+                    prize per {{object.tourney_type.bonus}} : {{object.bonus}} in INR
+
+
                 </p>
                 <legend class="border-bottom mb-3">Status</legend>
                 <table class="table table-sm table-dark">
@@ -50,7 +50,7 @@
                     <tbody>
 
                     {% for sub in subs %}
-                    {% if sub.is_alive %}
+                    {% if sub.active %}
                     <tr class="bg-success">
                         {% else %}
                         <tr class="bg-danger">
