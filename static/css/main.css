@@ -323,20 +323,67 @@ legend {
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-size: 1rem;
+  font-family: sans-serif;
+  font-size: 0.9rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #212529;
+  color: #ffffff;
   text-align: left;
-  background-color: #343740;
+  background-color: #495057;
+
 }
 
-
+.grad{
+background: linear-gradient(to bottom, #495057 22%, #6d1b1d 100%);
+}
 .center {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 80%;
+  width: 90%;
 }
 
+.bg-dark {
+    background-color: #495057!important;
+}
+
+
+.list-group-item {
+    background-color: #495057;
+    border: 3px solid rgba(0,0,0,.250);
+}
+
+
+.card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #40576f;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .5rem;
+}
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+.card-footer {
+    padding: .75rem 1.25rem;
+    background-color: rgba(0,0,0,.03);
+    border-top: 1px solid rgba(0,0,0,.125);
+}
+
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+
+.text-muted {
+    color: #a3b1bd!important;
+}

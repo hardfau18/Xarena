@@ -16,7 +16,8 @@
     <title>Xarena</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-md sticky-top navbar-dark bg-dark ">
+<div class="grad">
+<nav class="navbar navbar-expand-md sticky-top navbar-dark  ">
     <div class="container-fluid">
         <a href="{%url 'index' %}" class="navbar-brand mr-3"><img src="{% static 'img/logo2.png'%}"  width="120"class="d-inline-block align-top"> </a>
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
@@ -27,10 +28,12 @@
                 <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
                 <a href="{% url 'store' %}" class="nav-item nav-link">Games</a>
                 <a href="{% url 'tournaments' %}" class="nav-item nav-link">Tournaments</a>
-                <a href="#" class="nav-item nav-link">About</a>
                 <a href="#" class="nav-item nav-link">Contact Us</a>
             </div>
             <div class="navbar-nav ml-auto">
+                {% if user.is_staff %}
+                <a href="{% url 'money_req' %}" class=" btn btn-outline-info nav-link">Requests</a>
+                {% endif %}
                 {% if user.is_authenticated %}
                 <a href="{% url 'profile' %}" class=" btn btn-outline-info nav-link">Profile</a>
                 <a href="{% url 'logout' %}" class="btn btn-outline-info nav-item nav-link">Logout</a>
@@ -70,12 +73,13 @@
 </section>
 <br/>
 <br/>
+
 <!--BREADCRUMBS END-->
 
 {% endif%}
 {% block home %}
 {% endblock%}
-<div class="container ">
+<div class="container  ">
     {% if messages %}
     {% for message in messages %}
     <div class="alert alert-{{message.tags}}"> {{message}} </div>
@@ -85,8 +89,10 @@
     {% block content %}
     {% endblock content %}
     <br/>
-
-
+<br/>
+    <br/>
+<br/>
+    <br/>
 </div>
 <footer class="footer">
     <div class="row">
@@ -101,6 +107,7 @@
 
     </div>
 </footer>
+</div>
 </body>
 <script src=" {% static 'js/bootstrap.bundle.min.js' %}"></script>
 
@@ -125,13 +132,3 @@
 
 
 
-
-
-
-
-
-<!--
-
-
-
--->

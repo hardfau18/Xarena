@@ -46,7 +46,10 @@ class Subscription(models.Model):
     player = models.ForeignKey(User, on_delete=models.CASCADE)
     subscription_id = models.AutoField(primary_key=True,)
     eliminated_by = models.ForeignKey("self", on_delete=models.SET_NULL, blank=True, null=True)
-    elimination_number = models.PositiveIntegerField(default=None, null=True, blank=True, unique=True)
+    elimination_number = models.PositiveIntegerField(default=None, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('subscription_id', 'elimination_number')
 
     def __str__(self):
         return self.player.username + "_" + self.tourney.game.name
