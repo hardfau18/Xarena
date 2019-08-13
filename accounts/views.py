@@ -21,8 +21,7 @@ from paytm import checksum
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
-
-merchant_key = '5N1ZW7zBgXCoOiRZ'
+from django.conf import settings
 
 
 def target(request):
@@ -172,16 +171,16 @@ def money_transfer(request):
                 order.transaction_type = "deposit"
                 order.save()
                 params = {
-                    "MID": "eJvkxV73534228896310",
+                    "MID": settings.MID,
                     "ORDER_ID": str(order.order_id),
                     "CUST_ID": request.user.email,
                     "TXN_AMOUNT": str(order.amount),
-                    "CHANNEL_ID": "WEB",
+                    "CHANNEL_ID": "WAP",
                     "INDUSTRY_TYPE_ID": "Retail",
                     "WEBSITE": "WEBSTAGING",
                     'CALLBACK_URL': 'http://localhost:8000/accounts/profile/trans-status'
                 }
-                params["CHECKSUMHASH"] = checksum.generate_checksum(params, merchant_key)
+                params["CHECKSUMHASH"] = checksum.generate_checksum(params, settings.MERCHANT_KEY)
                 return render(request, "accounts/paytm.html", {"params": params})
             else:
                 return HttpResponseBadRequest(content="Invalid Request")
@@ -201,7 +200,7 @@ def trans_status(request):
 
     for i in form.keys():
         response[i] = form[i]
-    code = checksum.verify_checksum(response, merchant_key, form['CHECKSUMHASH'])
+    code = checksum.verify_checksum(response, settings.MERCHANT_KEY, form['CHECKSUMHASH'])
 
     order = Order.objects.get(pk=form["ORDERID"])
 
