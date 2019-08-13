@@ -16,7 +16,8 @@
     <title>Xarena</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-md sticky-top navbar-dark bg-dark ">
+<div class="grad">
+<nav class="navbar navbar-expand-md sticky-top navbar-dark  ">
     <div class="container-fluid">
         <a href="{%url 'index' %}" class="navbar-brand mr-3"><img src="{% static 'img/logo2.png'%}"  width="120"class="d-inline-block align-top"> </a>
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
@@ -72,12 +73,13 @@
 </section>
 <br/>
 <br/>
+
 <!--BREADCRUMBS END-->
 
 {% endif%}
 {% block home %}
 {% endblock%}
-<div class="container ">
+<div class="container  ">
     {% if messages %}
     {% for message in messages %}
     <div class="alert alert-{{message.tags}}"> {{message}} </div>
@@ -87,8 +89,10 @@
     {% block content %}
     {% endblock content %}
     <br/>
-
-
+<br/>
+    <br/>
+<br/>
+    <br/>
 </div>
 <footer class="footer">
     <div class="row">
@@ -103,6 +107,7 @@
 
     </div>
 </footer>
+</div>
 </body>
 <script src=" {% static 'js/bootstrap.bundle.min.js' %}"></script>
 
@@ -127,13 +132,3 @@
 
 
 
-
-
-
-
-
-<!--
-
-
-
--->

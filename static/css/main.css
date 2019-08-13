@@ -330,9 +330,12 @@ body {
   color: #ffffff;
   text-align: left;
   background-color: #495057;
+
 }
 
-
+.grad{
+background: linear-gradient(to bottom, #495057 22%, #6d1b1d 100%);
+}
 .center {
   display: block;
   margin-left: auto;
