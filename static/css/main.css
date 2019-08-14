@@ -387,3 +387,19 @@ background: linear-gradient(to bottom, #495057 22%, #6d1b1d 100%);
 .text-muted {
     color: #a3b1bd!important;
 }
+
+.footer{
+    border: 1px solid rgba(68, 212, 220, 0.3);
+}
+
+/* carousel */
+
+.carousel-caption h3 {
+    font-size: 150%;
+    font-weight: bold;
+}
+
+.carousel-caption p {
+    font-size: 120%;
+    color: #21ddfb;
+}
