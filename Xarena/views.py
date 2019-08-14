@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from tourney.models import Tournament
+from accounts.models import Game
 
 
 def index(request):
     tourney = Tournament.objects.filter(tourney_end=True).last()
     if tourney:
         context = {
+            'game': Game.objects.last(),
             'tourney': tourney,
             "first": tourney.subscription_set.get(elimination_number=1).membership().user_name,
             "second": tourney.subscription_set.get(elimination_number=2).membership().user_name,
@@ -13,6 +15,10 @@ def index(request):
         }
     else:
         context = {}
+    u_tourney = [i for i in Tournament.objects.all() if not (i.is_live() or i.tourney_end)]
+    context["u_tourney"] = u_tourney[0] if len(u_tourney) != 0 else None
+    context["game"] = Game.objects.last() or None
+    context["l_tourney"] = [i for i in Tournament.objects.all() if i.is_live ][0] or None
     return render(request, "index.html", context)
 
 
