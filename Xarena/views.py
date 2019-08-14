@@ -18,7 +18,8 @@ def index(request):
     u_tourney = [i for i in Tournament.objects.all() if not (i.is_live() or i.tourney_end)]
     context["u_tourney"] = u_tourney[0] if len(u_tourney) != 0 else None
     context["game"] = Game.objects.last() or None
-    context["l_tourney"] = [i for i in Tournament.objects.all() if i.is_live ][0] or None
+    if len([i for i in Tournament.objects.all() if i.is_live())!=0:
+        context["l_tourney"] = [i for i in Tournament.objects.all() if i.is_live ][0] or None
     return render(request, "index.html", context)
 
 
