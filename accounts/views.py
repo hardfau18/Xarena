@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, AmountTransfer
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, AmountWithdrawForm, PaymentNumForm, AmountDepositForm
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
 from django.contrib.auth import login
@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse,  HttpResponseBadRequest
 from django.views.generic import UpdateView, DeleteView
 from django.shortcuts import get_object_or_404
-from .models import Membership, Order,ReqMoneyBack
+from .models import Membership, Order,ReqMoneyBack, PaymentNumber, PaymentWindow
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from django.views.decorators.csrf import csrf_exempt
@@ -22,6 +22,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+
 
 
 def target(request):
@@ -83,6 +85,7 @@ def activate(request, uidb64, token):
 def profile(request):
     if request.method == "POST":
         u_form = UserUpdateForm(request.POST, instance=request.user)
+
         p_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
         if u_form.is_valid() and p_form.is_valid() :
             u_form.save()
@@ -92,13 +95,36 @@ def profile(request):
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
+    payment = {}
+    for i in PaymentWindow.objects.all():
+        payment[i] = PaymentNumForm(instance=PaymentNumber.objects.get(user=request.user.profile,
+                                                                          payment_window=i) if PaymentNumber.objects.filter(
+            user=request.user.profile, payment_window=i).exists() else None)
+
     context = {
+        "payments": payment,
         "u_form":u_form,
         "p_form":p_form,
         "game":request.user.membership_set.all()[0] if len(request.user.membership_set.all())>0 else None,
         "games":request.user.membership_set.all()[1:] if len(request.user.membership_set.all())>0 else None
     }
+
     return render(request, "accounts/profile.html", context)
+
+def payment_update(request,pk):
+    if request.method == "POST":
+        pw = get_object_or_404(PaymentWindow, pk=pk)
+        form = PaymentNumForm(request.POST, instance= PaymentNumber.objects.get(user=request.user.profile,
+            payment_window=pw) if PaymentNumber.objects.filter(user=request.user.profile, payment_window=pw).exists() else None)
+        print(form.data)
+        if form.is_valid():
+            num = form.save(commit=False)
+            num.user = request.user.profile
+            num.payment_window = pw
+            num.save()
+            return redirect("profile")
+        return redirect("profile")
+    return HttpResponseBadRequest(content="Invalid Request")
 
 @login_required
 def image_upload(request):
@@ -146,50 +172,64 @@ class DeleteSubscription(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 def money_transfer(request):
     if request.method == "POST":
-        form = AmountTransfer(request.POST)
-        balance = request.user.profile.account_balance
+        balance = request.user.profile.wallet_balance
+        form = AmountWithdrawForm(request.POST, inst=request.user)
+        print(form)
         if form.is_valid():
-            order = form.save(commit=False)
-            order.user = request.user
-
-            if request.POST.get("toggle_option") == "withdraw":
-                if request.user.profile.account_number is None:
-                    messages.error(request, "No account number!!! Please enter the account number in your profile and save.")
+            req = form.save(commit=False)
+            req.user = request.user
+            if "payment_method" in form.data:
+                try:
+                    if balance < req.amount :
+                        messages.error(request, "You don't have enough balance in your wallet")
+                        return redirect("transfer")
+                    req.payment_window = PaymentWindow.objects.get(pk=form.data.get("payment_method"))
+                    num=request.user.profile.paymentnumber_set.get(payment_window=req.payment_window).num
+                    if num:
+                        req.pay_to = num
+                    else:
+                        return HttpResponseBadRequest(content="<h1>Bad request 400</ha> <br/> invalid request")
+                    req.save()
+                    messages.success(request, "Your request for payment is success and payment is done soon")
                     return redirect("profile")
-                if form.cleaned_data["amount"]>balance:
-                    messages.error(request,"You don't have enough balance in your wallet")
-                    return render(request, "accounts/transfer.html", {"form":form})
-                order.transaction_type = "withdraw"
-                order.save()
-                obj = request.user.profile
-                obj.account_balance -= int(form.data['amount'])
-                obj.save()
-                ReqMoneyBack.objects.create(user=request.user,amount=int(form.data['amount']))
-                messages.success(request, f"Your request to transfer money to {request.user.profile.account_number} of {form.data['amount']} has sent. ")
-                return redirect("profile")
-            elif request.POST.get("toggle_option") == "deposit":
-                order.transaction_type = "deposit"
-                order.save()
-                params = {
-                    "MID": settings.MID,
-                    "ORDER_ID": str(order.order_id),
-                    "CUST_ID": request.user.email,
-                    "TXN_AMOUNT": str(order.amount),
-                    "CHANNEL_ID": "WAP",
-                    "INDUSTRY_TYPE_ID": "Retail",
-                    "WEBSITE": "WEBSTAGING",
-                    'CALLBACK_URL': 'http://localhost:8000/accounts/profile/trans-status'
-                }
-                params["CHECKSUMHASH"] = checksum.generate_checksum(params, settings.MERCHANT_KEY)
-                return render(request, "accounts/paytm.html", {"params": params})
+                except ObjectDoesNotExist :
+                    return HttpResponseBadRequest(content= "<h1> bad request object doesnot exists")
             else:
-                return HttpResponseBadRequest(content="Invalid Request")
-    form = AmountTransfer(initial={"user":request.user})
-    context = {
-    'form':form
+                messages.error(request, "select valid payment option")
+                return redirect("transfer")
+
+    context={
+        "withdraw_form" : AmountWithdrawForm(inst=request.user),
+        "deposit_form" : AmountDepositForm()
     }
     return render(request, "accounts/transfer.html", context)
 
+
+def to_wallet(request):
+    if request.method != "POST":
+        return  HttpResponseBadRequest(content="<h1>Bad request 400</ha> <br/> invalid request")
+    form = AmountDepositForm(request.POST)
+    try:
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user=request.user
+            order.save()
+            params = {
+                            "MID": settings.MID,
+                            "ORDER_ID": str(order.order_id),
+                            "CUST_ID": request.user.email,
+                            "TXN_AMOUNT": str(order.amount),
+                            "CHANNEL_ID": "WAP",
+                            "INDUSTRY_TYPE_ID": "Retail",
+                            "WEBSITE": "WEBSTAGING",
+                            'CALLBACK_URL': 'http://localhost:8000/accounts/profile/trans-status'
+                        }
+            params["CHECKSUMHASH"] = checksum.generate_checksum(params, settings.MERCHANT_KEY)
+            return render(request, "accounts/paytm.html", {"params": params})
+        else:
+            return HttpResponseBadRequest(content="Invalid Request")
+    except:
+        pass
 
 @csrf_exempt
 def trans_status(request):
@@ -208,7 +248,7 @@ def trans_status(request):
         return HttpResponseBadRequest(content="Transaction failed due to Hash missmatch")
     elif form['RESPCODE'] == '01':
         order.transaction_success = True
-        order.user.profile.account_balance += order.amount
+        order.user.profile.wallet_balance += order.amount
         order.user.profile.save()
         order.save()
 

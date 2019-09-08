@@ -20,11 +20,11 @@
         <legend class="border-bottom mb-4">Wallet:</legend>
         <p>
             wallet balance:-
-            {{user.profile.account_balance}}.00/- in INR
+            {{user.profile.wallet_balance}}.00/- in INR
         </p>
         <a class="btn btn-outline-info" href="{% url 'transfer' %}">Transfer Money</a>
     </fieldset>
-<br/>
+    <br/>
     <fieldset class="form-group">
         <legend class="border-bottom mb-4 "> Subscribed Games</legend>
         <!-- gamelist via javascript -->
@@ -75,10 +75,24 @@
 
     </fieldset>
     <!--  end gamelist -->
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Manage withdraw info</legend>
+    </fieldset>
+       {% for i,j in payments.items %}
+    <form method="post" action="payment_update/{{i.pk}}" class="form-inline">{%csrf_token%}
+    {{ j.non_field_errors }}
 
-
-
-
+        <div class="form-group mb-2 ">
+    <label for="staticEmail2" class="sr-only">{{i.name}}</label>
+        <input type="text" readonly class="form-control-plaintext-own" id="staticEmail2" value="{{i}}">
+  </div>
+        {{j.num.errors}}
+  <div class="form-group mx-sm-3 mb-2">
+    {{j.num| as_crispy_field}}
+  </div>
+  <button type="submit" class="btn btn-primary mb-2">Update</button>
+    </form>
+    {% endfor %}
     <br/>
     <br/>
     <form method="post" enctype="multipart/form-data">
@@ -87,6 +101,7 @@
         </fieldset>
         {% csrf_token %}
         {{u_form|crispy}}
+
         {{p_form|crispy}}
         <div class="form-group">
             <button type="submit" class="btn btn-outline-info">Update</button>
