@@ -116,13 +116,13 @@ def payment_update(request,pk):
         pw = get_object_or_404(PaymentWindow, pk=pk)
         form = PaymentNumForm(request.POST, instance= PaymentNumber.objects.get(user=request.user.profile,
             payment_window=pw) if PaymentNumber.objects.filter(user=request.user.profile, payment_window=pw).exists() else None)
-        print(form.data)
         if form.is_valid():
             num = form.save(commit=False)
             num.user = request.user.profile
             num.payment_window = pw
             num.save()
             return redirect("profile")
+        messages.warning(request, "something wrong")
         return redirect("profile")
     return HttpResponseBadRequest(content="Invalid Request")
 

@@ -47,7 +47,7 @@ class Profile(models.Model):
 class PaymentNumber(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     payment_window = models.ForeignKey(PaymentWindow, on_delete=models.CASCADE)
-    num = models.PositiveIntegerField(blank=True, null=True)
+    num = models.BigIntegerField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.user.username} {self.payment_window}"
