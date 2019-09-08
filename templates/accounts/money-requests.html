@@ -12,8 +12,8 @@
     <div class="d-flex w-100 justify-content-between">
         <h5 class="mb-1">{{instance.user}}</h5>
         <span>order id: {{instance.pk}}</span>
-
-
+        <span>user balance : </span>
+        <span class="badge badge-primary ">{{user.profile.wallet_balance}} </span
         <form method="post" action="{%url 'money_req_handle'%}">
             {% csrf_token %}
             <input type="hidden" name="id" value="{{instance.pk}}">
@@ -24,7 +24,8 @@
     </div>
 
     <p class="list-group-item d-flex justify-content-between align-items-center mb-1">
-        Account number:<br/>{{instance.user.profile.account_number}}
+        Payment method : {{instance.payment_window}}
+        <br/>number : {{instance.pay_to}}
         <span class="badge badge-primary badge-pill">{{instance.amount}} Rs</span>
 
         </ul>

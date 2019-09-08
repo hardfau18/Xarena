@@ -14,11 +14,13 @@ urlpatterns = [
     path("password-reset-complete/", auth_views.PasswordResetCompleteView.as_view(template_name="accounts/password_reset_complete.html"), name="password_reset_complete"),
     path("activate/<uidb64>/<token>/", views.activate, name="activate"),
     path("profile/", views.profile, name="profile"),
+    path("profile/payment_update/<int:pk>", views.payment_update, name="payment_update"),
     path("Money-requests/", views.MoneyRequests.as_view(), name="money_req"),
     path("Money-requests/handle", views.money_req_handle, name="money_req_handle"),
     path("profile/image-upload", views.image_upload, name="image_upload"),
     path("profile/update-info/<int:pk>/", views.UpdateSubscription.as_view(), name="update_subscription"),
     path("profile/update-info/<int:pk>/delete", views.DeleteSubscription.as_view(), name="delete_subscription"),
     path("profile/transfer", views.money_transfer, name= "transfer"),
+    path("profile/transfer/to_wallet", views.to_wallet, name= "to_wallet"),
     path("profile/trans-status", views.trans_status, name="trans_status")
 ]

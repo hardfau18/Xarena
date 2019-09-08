@@ -18,13 +18,19 @@ class Game(models.Model):
     def __str__(self):
         return self.name
 
+class PaymentWindow(models.Model):
+    name=models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="images/profile_pics", default="images/profile_pics/default.png")
     email_confirmed = models.BooleanField(default=False)
-    account_balance = models.PositiveIntegerField(default=0)
-    account_number = models.PositiveIntegerField(blank=True, null=True)
+    wallet_balance = models.PositiveIntegerField(default=0)
+    payment_options = models.ManyToManyField(PaymentWindow, through="PaymentNumber")
 
     def __str__(self):
         return f"{self.user.username} profile"
@@ -37,6 +43,14 @@ class Profile(models.Model):
             img.thumbnail(output_size)
             img.save(self.image.path)
 
+
+class PaymentNumber(models.Model):
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    payment_window = models.ForeignKey(PaymentWindow, on_delete=models.CASCADE)
+    num = models.PositiveIntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.user.username} {self.payment_window}"
 
 class Membership(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
@@ -59,16 +73,14 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.PositiveIntegerField()
     date_of_payment = models.DateTimeField(auto_now_add=True)
-    TRANSACTION_TYPE = (
-        ("deposit","To account"),
-        ("withdraw", "To wallet")
-    )
-    transaction_type = models.CharField(max_length=8, choices=TRANSACTION_TYPE)
     transaction_success = models.BooleanField(default=False)
+
 
 
 class ReqMoneyBack(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    payment_window = models.ForeignKey(PaymentWindow, on_delete=models.CASCADE)
+    pay_to = models.PositiveIntegerField()
     amount = models.PositiveIntegerField(default=0)
     trans_status = models.BooleanField(default=False)
     request_date = models.TimeField(auto_now_add=True)

@@ -7,24 +7,91 @@
 {% block content %}
 <p>
     Your current wallet balance:-
-    {{user.profile.account_balance}}.00/- in INR
+    {{user.profile.wallet_balance}}.00/- in INR
 </p>
 
-<form method="post" action="">
-    {% csrf_token %}
 
-    <div class="toggle_radio">
-        <input type="radio" class="toggle_option" id="first_toggle" name="toggle_option" value="deposit">
-        <input type="radio" checked class="toggle_option" id="second_toggle" name="toggle_option" value="withdraw">
-        <label for="first_toggle"><p>To Wallet</p></label>
-        <label for="second_toggle"><p>To Account</p></label>
-        <div class="toggle_option_slider">
+<nav class="tabs">
+    <div class="selector"></div>
+    <a href="#" class="active" onclick="openCity(event, 'to-wallet')" id="defaultOpen">To wallet</a>
+    <a href="#" onclick="openCity(event, 'to-account')">To account</a>
+
+</nav>
+
+
+<div id="to-account" class="tabcontent">
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <p>to account</p>
+        <div class="form-group row">
+            {{withdraw_form|crispy}}
         </div>
-    </div>
+        <button type="submit" class="btn btn-primary mb-2">Transfer</button>
+    </form>
+</div>
 
-    <div class="form-group row">
-        {{form|crispy}}
-    </div>
-    <button type="submit" class="btn btn-primary mb-2">Transfer</button>
-</form>
+<div id="to-wallet" class="tabcontent">
+    <form method="post" action="{% url 'to_wallet'%}">
+        {% csrf_token %}
+        <p>to wallet</p>
+        <div class="form-group row">
+            {{deposit_form|crispy}}
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Transfer</button>
+    </form>
+</div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    var tabs = $('.tabs');
+var selector = $('.tabs').find('a').length;
+//var selector = $(".tabs").find(".selector");
+var activeItem = tabs.find('.active');
+var activeWidth = activeItem.innerWidth();
+$(".selector").css({
+  "left": activeItem.position.left + "px",
+  "width": activeWidth + "px"
+});
+
+$(".tabs").on("click","a",function(e){
+  e.preventDefault();
+  $('.tabs a').removeClass("active");
+  $(this).addClass('active');
+  var activeWidth = $(this).innerWidth();
+  var itemPos = $(this).position();
+  $(".selector").css({
+    "left":itemPos.left + "px",
+    "width": activeWidth + "px"
+  });
+});
+
+function openCity(evt, cityName) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+
+  // Get all elements with class="tabcontent" and hide them
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+document.getElementById("defaultOpen").click();
+</script>
+
 {% endblock %}

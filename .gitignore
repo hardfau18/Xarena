@@ -128,3 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+/accounts/migrations/
+/tourney/migrations/
