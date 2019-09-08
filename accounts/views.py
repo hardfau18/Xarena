@@ -144,52 +144,6 @@ class DeleteSubscription(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-def money_transfer(request):
-    if request.method == "POST":
-        form = AmountTransfer(request.POST)
-        balance = request.user.profile.account_balance
-        if form.is_valid():
-            order = form.save(commit=False)
-            order.user = request.user
-
-            if request.POST.get("toggle_option") == "withdraw":
-                if request.user.profile.account_number is None:
-                    messages.error(request, "No account number!!! Please enter the account number in your profile and save.")
-                    return redirect("profile")
-                if form.cleaned_data["amount"]>balance:
-                    messages.error(request,"You don't have enough balance in your wallet")
-                    return render(request, "accounts/transfer.html", {"form":form})
-                order.transaction_type = "withdraw"
-                order.save()
-                obj = request.user.profile
-                obj.account_balance -= int(form.data['amount'])
-                obj.save()
-                ReqMoneyBack.objects.create(user=request.user,amount=int(form.data['amount']))
-                messages.success(request, f"Your request to transfer money to {request.user.profile.account_number} of {form.data['amount']} has sent. ")
-                return redirect("profile")
-            elif request.POST.get("toggle_option") == "deposit":
-                order.transaction_type = "deposit"
-                order.save()
-                params = {
-                    "MID": settings.MID,
-                    "ORDER_ID": str(order.order_id),
-                    "CUST_ID": request.user.email,
-                    "TXN_AMOUNT": str(order.amount),
-                    "CHANNEL_ID": "WAP",
-                    "INDUSTRY_TYPE_ID": "Retail",
-                    "WEBSITE": "WEBSTAGING",
-                    'CALLBACK_URL': 'http://13.127.178.253/accounts/profile/trans-status'
-                }
-                params["CHECKSUMHASH"] = checksum.generate_checksum(params, settings.MERCHANT_KEY)
-                return render(request, "accounts/paytm.html", {"params": params})
-            else:
-                return HttpResponseBadRequest(content="Invalid Request")
-    form = AmountTransfer(initial={"user":request.user})
-    context = {
-    'form':form
-    }
-    return render(request, "accounts/transfer.html", context)
-
 
 @csrf_exempt
 def trans_status(request):
