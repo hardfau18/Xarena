@@ -14,7 +14,7 @@ import pytz
 def distribute_prize(t):
     players = t.subscription_set
     first = players.get(elimination_number=1)
-    first.player.profile.wallet += t.first_prize
+    first.player.profile.wallet_balance += t.first_prize
     first.player.profile.save()
 
     second = players.get(elimination_number=2)
