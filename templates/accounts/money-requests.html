@@ -13,7 +13,7 @@
         <h5 class="mb-1">{{instance.user}}</h5>
         <span>order id: {{instance.pk}}</span>
         <span>user balance : </span>
-        <span class="badge badge-primary ">{{user.profile.wallet_balance}} </span
+        <span class="badge badge-primary ">{{user.profile.wallet_balance}} </span>
         <form method="post" action="{%url 'money_req_handle'%}">
             {% csrf_token %}
             <input type="hidden" name="id" value="{{instance.pk}}">
