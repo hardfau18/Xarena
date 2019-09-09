@@ -80,7 +80,7 @@ class Order(models.Model):
 class ReqMoneyBack(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     payment_window = models.ForeignKey(PaymentWindow, on_delete=models.CASCADE)
-    pay_to = models.PositiveIntegerField()
+    pay_to = models.BigIntegerField()
     amount = models.PositiveIntegerField(default=0)
     trans_status = models.BooleanField(default=False)
     request_date = models.TimeField(auto_now_add=True)

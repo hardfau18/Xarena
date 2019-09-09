@@ -1,9 +1,14 @@
 assets/*
 media/*
 Xarena/settings.py
+<<<<<<< HEAD
 static/img/2.jpg
 static/img/logo2.png
 **/migrations/
+=======
+accounts/migrations/
+accounts/migrations/00*
+>>>>>>> 7deba3a2dca304c7d4fbd49d1ee45e7c3b591771
 .idea
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -132,3 +137,5 @@ dmypy.json
 
 /accounts/migrations/
 /tourney/migrations/
+/accounts/migrations/0001_initial.py
+/accounts/migrations/0002_reqmoneyback.py
