@@ -204,7 +204,6 @@ def money_transfer(request):
     }
     return render(request, "accounts/transfer.html", context)
 
-
 def to_wallet(request):
     if request.method != "POST":
         return  HttpResponseBadRequest(content="<h1>Bad request 400</ha> <br/> invalid request")
@@ -222,7 +221,7 @@ def to_wallet(request):
                             "CHANNEL_ID": "WAP",
                             "INDUSTRY_TYPE_ID": "Retail",
                             "WEBSITE": "WEBSTAGING",
-                            'CALLBACK_URL': 'http://localhost:8000/accounts/profile/trans-status'
+                            'CALLBACK_URL': 'http://www.xarena.cf/accounts/profile/trans-status'
                         }
             params["CHECKSUMHASH"] = checksum.generate_checksum(params, settings.MERCHANT_KEY)
             return render(request, "accounts/paytm.html", {"params": params})
