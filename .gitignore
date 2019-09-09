@@ -1,6 +1,8 @@
 assets/*
 media/*
 Xarena/settings.py
+static/img/2.jpg
+static/img/logo2.png
 **/migrations/
 .idea
 # Byte-compiled / optimized / DLL files
