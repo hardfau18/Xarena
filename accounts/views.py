@@ -267,6 +267,7 @@ def money_req_handle(request):
     if request.method=="POST":
         req=get_object_or_404(ReqMoneyBack,pk=request.POST.get("id"))
         req.trans_status = True
+        req.done_by = request.user
         req.save()
         messages.success(request,f"transaction on order {req.pk} is success.")
         return redirect("money_req")

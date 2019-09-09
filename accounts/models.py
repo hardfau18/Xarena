@@ -85,6 +85,7 @@ class ReqMoneyBack(models.Model):
     trans_status = models.BooleanField(default=False)
     request_date = models.TimeField(auto_now_add=True)
     finish_date = models.TimeField(auto_now=True)
+    done_by = models.ForeignKey(User, on_delete= models.CASCADE, related_name="paid_by", null=True)
 
     def __str__(self):
         return self.user.username+" "+str(self.amount)
