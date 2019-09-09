@@ -12,9 +12,9 @@
         <div>
             <img src="{{object.game.image.url}}" width="100%">
             <div class="info">
-		    {% if user.is_staff %}
-		    <a class="btn btn-outline-info" href="{% url 'tourney_manage' object.pk %}">Manage</a>
-		    {%endif%}
+                {% if user.is_staff %}
+                <a class="btn btn-outline-info" href="{% url 'tourney_manage' object.pk %}">Manage</a>
+                {%endif%}
                 <p>
                     Game mode      : {{object.tourney_type}}
                     <br/>
@@ -47,6 +47,8 @@
                         <button type="submit" class="btn  btn-outline-info" >Join</button>
                     </form>
                 </div>
+                {% elif show_pass %}
+                <p> Tournament id and password is displayed before 2 hours before tournament start</p>
                 {% else %}
                 <legend class="border-bottom mb-3">Info</legend>
                 <p>
@@ -61,9 +63,9 @@
                 {% endif %}
 
                 {% elif object.is_live %}
-                 <a class="btn btn-outline-info" href="{% url 'live_tourney' object.pk %}">Status</a>
+                <a class="btn btn-outline-info" href="{% url 'live_tourney' object.pk %}">Status</a>
                 {% else %}
-                 <a class="btn btn-outline-info" href="{% url 'live_tourney' object.pk %}">Results</a>
+                <a class="btn btn-outline-info" href="{% url 'live_tourney' object.pk %}">Results</a>
                 {% endif %}
                 <br/>
 
