@@ -7,25 +7,27 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from datetime import datetime, timedelta
+import pytz
 
 
 def distribute_prize(t):
     players = t.subscription_set
     first = players.get(elimination_number=1)
-    first.player.profile.account_balance += t.first_prize
+    first.player.profile.wallet += t.first_prize
     first.player.profile.save()
 
     second = players.get(elimination_number=2)
-    second.player.profile.account_balance += t.second_prize
+    second.player.profile.wallet_balance += t.second_prize
     second.player.profile.save()
 
     third = players.get(elimination_number=3)
-    third.player.profile.account_balance += t.third_prize
+    third.player.profile.wallet_balance += t.third_prize
     third.player.profile.save()
 
     if t.bonus :
         for sub in players.all():
-            sub.player.profile.account_balance += sub.bonus_count() * t.bonus
+            sub.player.profile.wallet_balance += sub.bonus_count() * t.bonus
             sub.player.profile.save()
 
 
@@ -66,23 +68,22 @@ def tourney_detail(request, pk):
         return redirect("detail", pk=tourney.game.pk)
 
     if request.method == "POST":
-        if request.user.profile.account_balance < tourney.price:
+        if request.user.profile.wallet_balance < tourney.entry_fee:
             messages.error(request,"sorry your wallet balance is less than tournament price. please add some credits to your wallet")
             return redirect("transfer")
         if request.user in tourney.players.all():
             messages.warning("you are already in tournament")
             return redirect("tournament_detail", pk = tourney.pk)
         user_acc = request.user.profile
-        user_acc.account_balance -= tourney.entry_fee
+        user_acc.wallet_balance -= tourney.entry_fee
         user_acc.save()
         tourney.players.add(request.user)
         return redirect("tournament_detail", pk = tourney.pk)
-
-    if request.user in tourney.players.all() :
-        user_exist = tourney.players.get(id=request.user.id).username
-    else:
-        user_exist = ""
+    timez = pytz.timezone("Asia/Kolkata")
+    show_pass = True if tourney.time.astimezone(timez) - datetime.now(tz=timez) > timedelta(hours=2) else False
+    user_exist = tourney.players.get(id=request.user.id).username if request.user in tourney.players.all() else ""
     context = {
+        "show_pass": show_pass,
         "user_exist": user_exist,
         "object": tourney
     }
