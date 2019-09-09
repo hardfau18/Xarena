@@ -221,7 +221,7 @@ def to_wallet(request):
                             "CHANNEL_ID": "WAP",
                             "INDUSTRY_TYPE_ID": "Retail",
                             "WEBSITE": "WEBSTAGING",
-                            'CALLBACK_URL': 'http://www.xarena.cf/accounts/profile/trans-status'
+                            'CALLBACK_URL': 'https://www.xarena.cf/accounts/profile/trans-status'
                         }
             params["CHECKSUMHASH"] = checksum.generate_checksum(params, settings.MERCHANT_KEY)
             return render(request, "accounts/paytm.html", {"params": params})
