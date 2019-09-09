@@ -267,6 +267,7 @@ def money_req_handle(request):
     if request.method=="POST":
         req=get_object_or_404(ReqMoneyBack,pk=request.POST.get("id"))
         req.user.profile.wallet_balance -= req.amount
+        req.user.profile.save()
         req.trans_status = True
         req.done_by = request.user
         req.save()
