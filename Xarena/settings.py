@@ -85,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'xarena',
         'USER': 'gireesh',
-        'PASSWORD': 'dxarduino179',
+        'PASSWORD': os.environment.get("DB_PASS"),
         'HOST': 'localhost',
         'PORT': '',
     }
