@@ -22,4 +22,4 @@ requests==2.22.0
 shellescape==3.4.1
 sqlparse==0.3.0
 Unidecode==1.0.23
-urllib3==1.25.8
+urllib3==1.26.5
